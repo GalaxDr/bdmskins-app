@@ -1,48 +1,30 @@
 import { NextResponse } from 'next/server';
-
-// Array em memória para armazenar as skins (substitua por um banco de dados em produção)
-let skins = [
-  {
-    id: 1,
-    name: "★ Karambit | Rust Coat",
-    price: "R$899.99",
-    float: "0.45721983",
-    wear: "Battle-Scarred",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-mLXKQrZwttSaViL9u0v76mNH6mYAQY.png"
-  },
-  {
-    id: 2,
-    name: "AK-47 | Bloodsport",
-    price: "R$299.99",
-    float: "0.15328947",
-    wear: "Field-Tested",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-d837TYtpMLCqzm0RNqy3SbXah1EMMX.png"
-  }
-];
+import prisma from 'lib/prisma';
 
 export async function GET() {
+  const skins = await prisma.skin.findMany();
   return NextResponse.json(skins);
 }
 
 export async function POST(request: Request) {
-  const newSkin = await request.json();
-  newSkin.id = skins.length ? skins[skins.length - 1].id + 1 : 1; // Gera um novo ID
-  skins.push(newSkin);
+  const data = await request.json();
+  const newSkin = await prisma.skin.create({ data });
   return NextResponse.json(newSkin);
 }
 
 export async function PUT(request: Request) {
-  const updatedSkin = await request.json();
-  const index = skins.findIndex((skin) => skin.id === updatedSkin.id);
-
-  if (index === -1) return NextResponse.json({ error: 'Skin not found' }, { status: 404 });
-
-  skins[index] = { ...skins[index], ...updatedSkin };
-  return NextResponse.json(skins[index]);
+  const { id, ...data } = await request.json();
+  const updatedSkin = await prisma.skin.update({
+    where: { id },
+    data,
+  });
+  return NextResponse.json(updatedSkin);
 }
 
 export async function DELETE(request: Request) {
   const { id } = await request.json();
-  skins = skins.filter((skin) => skin.id !== id);
+  await prisma.skin.delete({
+    where: { id },
+  });
   return NextResponse.json({ message: 'Skin deleted' });
 }

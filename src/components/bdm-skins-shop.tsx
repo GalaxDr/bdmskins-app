@@ -9,8 +9,8 @@ import { Search } from "lucide-react";
 interface Skin {
   id: number;
   name: string;
-  price: string;
-  float: string;
+  price: number;
+  float: number;
   wear: string;
   image: string;
 }
@@ -34,10 +34,10 @@ export function BdmSkinsShop() {
     skin.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Função para gerar o link de conversa no WhatsApp com o nome da skin
+  // Função para redirecionar para o WhatsApp com o nome da skin
   const handleBuyNowClick = (skinName: string) => {
     const message = `Olá, estou interessado na skin: ${encodeURIComponent(skinName)}`;
-    const whatsappLink = `https://wa.me/5551994025473?text=${message}`;
+    const whatsappLink = `https://wa.me/SEUNUMERO?text=${message}`;
     window.open(whatsappLink, "_blank");
   };
 
@@ -85,9 +85,9 @@ export function BdmSkinsShop() {
               <CardContent className="p-4 pt-0">
                 <CardTitle className="text-md mb-2 text-gray-100">{skin.name}</CardTitle>
                 <div className="space-y-2">
-                  <p className="text-xl font-bold text-blue-400">{skin.price}</p>
+                  <p className="text-xl font-bold text-blue-400">R${skin.price.toFixed(2)}</p>
                   <div className="flex justify-between items-center text-sm text-gray-400">
-                    <span>Float: {skin.float}</span>
+                    <span>Float: {skin.float.toFixed(8)}</span>
                     <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">
                       {skin.wear}
                     </span>
