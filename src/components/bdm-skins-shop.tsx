@@ -37,7 +37,7 @@ export function BdmSkinsShop() {
   // Função para redirecionar para o WhatsApp com o nome da skin
   const handleBuyNowClick = (skinName: string) => {
     const message = `Olá, estou interessado na skin: ${encodeURIComponent(skinName)}`;
-    const whatsappLink = `https://wa.me/SEUNUMERO?text=${message}`;
+    const whatsappLink = `https://wa.me/5551994025473?text=${message}`;
     window.open(whatsappLink, "_blank");
   };
 
