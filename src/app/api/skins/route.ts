@@ -7,10 +7,19 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const data = await request.json();
-  const newSkin = await prisma.skin.create({ data });
-  return NextResponse.json(newSkin);
-}
+    const data = await request.json();
+  
+    // Converte os valores para Float antes de salvar
+    const newSkin = await prisma.skin.create({
+      data: {
+        ...data,
+        price: parseFloat(data.price),
+        float: parseFloat(data.float),
+      },
+    });
+    
+    return NextResponse.json(newSkin);
+  }
 
 export async function PUT(request: Request) {
   const { id, ...data } = await request.json();
