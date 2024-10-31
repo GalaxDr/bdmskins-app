@@ -37,3 +37,21 @@ export async function DELETE(request: Request) {
   });
   return NextResponse.json({ message: 'Skin deleted' });
 }
+
+export async function PATCH(request: Request) {
+    const { id, ...data } = await request.json();
+  
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+  
+    try {
+      const updatedSkin = await prisma.skin.update({
+        where: { id },
+        data,
+      });
+      return NextResponse.json(updatedSkin);
+    } catch (error) {
+      return NextResponse.json({ error: "Skin not found or update failed" }, { status: 404 });
+    }
+  }

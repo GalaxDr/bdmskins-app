@@ -37,7 +37,7 @@ export function BdmSkinsShop() {
   // Função para redirecionar para o WhatsApp com o nome da skin
   const handleBuyNowClick = (skinName: string) => {
     const message = `Olá, estou interessado na skin: ${encodeURIComponent(skinName)}`;
-    const whatsappLink = `https://wa.me/5551994025473?text=${message}`;
+    const whatsappLink = `https://wa.me/SEUNUMERO?text=${message}`;
     window.open(whatsappLink, "_blank");
   };
 
@@ -71,7 +71,7 @@ export function BdmSkinsShop() {
           {filteredSkins.map((skin) => (
             <Card 
               key={skin.id} 
-              className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1"
+              className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
             >
               <CardHeader className="p-4">
                 <div className="aspect-square relative bg-gray-900 rounded-lg overflow-hidden">
@@ -82,9 +82,9 @@ export function BdmSkinsShop() {
                   />
                 </div>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
+              <CardContent className="p-4 pt-0 flex flex-col flex-grow">
                 <CardTitle className="text-md mb-2 text-gray-100">{skin.name}</CardTitle>
-                <div className="space-y-2">
+                <div className="space-y-2 flex-grow">
                   <p className="text-xl font-bold text-blue-400">R${skin.price.toFixed(2)}</p>
                   <div className="flex justify-between items-center text-sm text-gray-400">
                     <span>Float: {skin.float.toFixed(8)}</span>
@@ -92,13 +92,13 @@ export function BdmSkinsShop() {
                       {skin.wear}
                     </span>
                   </div>
-                  <Button
-                    onClick={() => handleBuyNowClick(skin.name)}
-                    className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
-                  >
-                    Buy Now
-                  </Button>
                 </div>
+                <Button
+                  onClick={() => handleBuyNowClick(skin.name)}
+                  className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
+                >
+                  Buy Now
+                </Button>
               </CardContent>
             </Card>
           ))}

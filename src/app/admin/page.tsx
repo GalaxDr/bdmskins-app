@@ -27,13 +27,14 @@ export default function AdminPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [skins, setSkins] = useState<Skin[]>([]);
+  const [editingSkin, setEditingSkin] = useState<Skin | null>(null);
 
   // Estado para os campos do formulário
   const [newSkin, setNewSkin] = useState<Omit<Skin, 'id'>>({
     name: "",
     price: "",
     float: "",
-    wear: WearCondition.FactoryNew, // Definimos uma condição padrão
+    wear: WearCondition.FactoryNew,
     image: ""
   });
 
@@ -54,12 +55,20 @@ export default function AdminPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewSkin((prev) => ({ ...prev, [name]: value }));
+    if (editingSkin) {
+      setEditingSkin({ ...editingSkin, [name]: value });
+    } else {
+      setNewSkin((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  // Função para atualizar a condição
   const handleWearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setNewSkin((prev) => ({ ...prev, wear: e.target.value as WearCondition }));
+    const wear = e.target.value as WearCondition;
+    if (editingSkin) {
+      setEditingSkin({ ...editingSkin, wear });
+    } else {
+      setNewSkin((prev) => ({ ...prev, wear }));
+    }
   };
 
   const addSkin = async () => {
@@ -76,6 +85,19 @@ export default function AdminPage() {
 
     fetchSkins();
     setNewSkin({ name: "", price: "", float: "", wear: WearCondition.FactoryNew, image: "" });
+  };
+
+  const updateSkin = async () => {
+    if (editingSkin) {
+      await fetch(`/api/skins`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingSkin),
+      });
+
+      fetchSkins();
+      setEditingSkin(null);
+    }
   };
 
   const deleteSkin = async (id: number) => {
@@ -137,8 +159,6 @@ export default function AdminPage() {
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
-            
-            {/* Select para escolher a condição (wear) */}
             <select
               name="wear"
               value={newSkin.wear}
@@ -151,7 +171,6 @@ export default function AdminPage() {
                 </option>
               ))}
             </select>
-
             <Input
               name="image"
               placeholder="URL da Imagem"
@@ -164,6 +183,7 @@ export default function AdminPage() {
             </Button>
           </div>
 
+          {/* Lista de skins com opção de edição */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {skins.map((skin) => (
               <Card key={skin.id} className="bg-gray-800 border-gray-700">
@@ -171,15 +191,71 @@ export default function AdminPage() {
                   <CardTitle className="text-xl text-white">{skin.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
-                  <p>Price: {skin.price}</p>
-                  <p>Float: {skin.float}</p>
-                  <p>Wear: {skin.wear}</p>
-                  <Button
-                    onClick={() => deleteSkin(skin.id)}
-                    className="mt-4 bg-red-600 w-full"
-                  >
-                    Delete Skin
-                  </Button>
+                  {editingSkin?.id === skin.id ? (
+                    <div>
+                      <Input
+                        name="name"
+                        placeholder="Nome da Skin"
+                        value={editingSkin.name}
+                        onChange={handleInputChange}
+                        className="mb-2 bg-gray-800 text-white"
+                      />
+                      <Input
+                        name="price"
+                        placeholder="Preço"
+                        value={editingSkin.price}
+                        onChange={handleInputChange}
+                        className="mb-2 bg-gray-800 text-white"
+                      />
+                      <Input
+                        name="float"
+                        placeholder="Float"
+                        value={editingSkin.float}
+                        onChange={handleInputChange}
+                        className="mb-2 bg-gray-800 text-white"
+                      />
+                      <select
+                        name="wear"
+                        value={editingSkin.wear}
+                        onChange={handleWearChange}
+                        className="mb-2 bg-gray-800 text-white w-full p-2 rounded-md"
+                      >
+                        {Object.values(WearCondition).map((condition) => (
+                          <option key={condition} value={condition}>
+                            {condition}
+                          </option>
+                        ))}
+                      </select>
+                      <Input
+                        name="image"
+                        placeholder="URL da Imagem"
+                        value={editingSkin.image}
+                        onChange={handleInputChange}
+                        className="mb-2 bg-gray-800 text-white"
+                      />
+                      <Button onClick={updateSkin} className="bg-green-600 w-full mt-2">
+                        Save Changes
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <p>Price: {skin.price}</p>
+                      <p>Float: {skin.float}</p>
+                      <p>Wear: {skin.wear}</p>
+                      <Button
+                        onClick={() => setEditingSkin(skin)}
+                        className="mt-4 bg-yellow-600 w-full"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => deleteSkin(skin.id)}
+                        className="mt-2 bg-red-600 w-full"
+                      >
+                        Delete Skin
+                      </Button>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             ))}
