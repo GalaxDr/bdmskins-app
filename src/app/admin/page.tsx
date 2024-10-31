@@ -92,7 +92,11 @@ export default function AdminPage() {
       await fetch(`/api/skins`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editingSkin),
+        body: JSON.stringify({
+          ...editingSkin,
+          price: parseFloat(editingSkin.price),
+          float: parseFloat(editingSkin.float),
+        }),
       });
 
       fetchSkins();
