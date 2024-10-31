@@ -48,7 +48,7 @@ export function BdmSkinsShop() {
           <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
             BDM Skins
           </h1>
-          <p className="text-gray-400">Premium CS:GO Skins Marketplace</p>
+          <p className="text-gray-400">Premium CS2 Skins Marketplace</p>
         </header>
 
         {/* Search Section */}
