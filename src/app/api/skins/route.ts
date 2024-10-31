@@ -46,12 +46,12 @@ export async function PATCH(request: Request) {
     }
   
     try {
-      const updatedSkin = await prisma.skin.update({
-        where: { id },
-        data,
-      });
-      return NextResponse.json(updatedSkin);
-    } catch (error) {
-      return NextResponse.json({ error: "Skin not found or update failed" }, { status: 404 });
-    }
+        const updatedSkin = await prisma.skin.update({
+          where: { id },
+          data,
+        });
+        return NextResponse.json(updatedSkin);
+      } catch {
+        return NextResponse.json({ error: "Skin not found or update failed" }, { status: 404 });
+      }
   }
