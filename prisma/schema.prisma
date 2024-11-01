@@ -22,5 +22,5 @@ model Skin {
   float   Float
   wear    String
   image   String
-  inspect String
+  inspect String?
 }
