@@ -12,6 +12,7 @@ interface Skin {
   float: string;
   wear: WearCondition;
   image: string;
+  inspectLink: string;
 }
 
 enum WearCondition {
@@ -35,11 +36,12 @@ export default function AdminPage() {
     price: "",
     float: "",
     wear: WearCondition.FactoryNew,
-    image: ""
+    image: "",
+    inspectLink: "" // Adicionando o campo inspectLink
   });
 
   const handleLogin = () => {
-    if (username === 'bondedosmaloka' && password === 'bdm123') {
+    if (username === '123' && password === '123') {
       setIsAuthenticated(true);
       fetchSkins();
     } else {
@@ -72,7 +74,7 @@ export default function AdminPage() {
   };
 
   const addSkin = async () => {
-    if (!newSkin.name || !newSkin.price || !newSkin.float || !newSkin.image) {
+    if (!newSkin.name || !newSkin.price || !newSkin.float || !newSkin.image || !newSkin.inspectLink) {
       alert("Preencha todos os campos antes de adicionar a skin.");
       return;
     }
@@ -84,7 +86,7 @@ export default function AdminPage() {
     });
 
     fetchSkins();
-    setNewSkin({ name: "", price: "", float: "", wear: WearCondition.FactoryNew, image: "" });
+    setNewSkin({ name: "", price: "", float: "", wear: WearCondition.FactoryNew, image: "", inspectLink: "" });
   };
 
   const updateSkin = async () => {
@@ -182,6 +184,13 @@ export default function AdminPage() {
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
+            <Input
+              name="inspectLink"
+              placeholder="Link de Inspect"
+              value={newSkin.inspectLink}
+              onChange={handleInputChange}
+              className="mb-4 bg-gray-700 text-white"
+            />
             <Button onClick={addSkin} className="w-full bg-green-600">
               Adicionar Skin
             </Button>
@@ -237,6 +246,13 @@ export default function AdminPage() {
                         onChange={handleInputChange}
                         className="mb-2 bg-gray-800 text-white"
                       />
+                      <Input
+                        name="inspectLink"
+                        placeholder="Link de Inspect"
+                        value={editingSkin.inspectLink}
+                        onChange={handleInputChange}
+                        className="mb-2 bg-gray-800 text-white"
+                      />
                       <Button onClick={updateSkin} className="bg-green-600 w-full mt-2">
                         Save Changes
                       </Button>
@@ -246,6 +262,7 @@ export default function AdminPage() {
                       <p>Price: {skin.price}</p>
                       <p>Float: {skin.float}</p>
                       <p>Wear: {skin.wear}</p>
+                      <p>Inspect Link: <a href={skin.inspectLink} target="_blank" rel="noopener noreferrer" className="text-blue-400">View Inspect</a></p>
                       <Button
                         onClick={() => setEditingSkin(skin)}
                         className="mt-4 bg-yellow-600 w-full"
