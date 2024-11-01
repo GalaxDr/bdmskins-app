@@ -17,7 +17,7 @@ interface Skin {
 
 export function BdmSkinsShop() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOption, setSortOption] = useState<"price-asc" | "price-desc" | "float-asc" | "float-desc">("price-asc");
   const [skins, setSkins] = useState<Skin[]>([]);
 
   // Função para buscar skins da API
@@ -31,13 +31,21 @@ export function BdmSkinsShop() {
     fetchSkins();
   }, []);
 
-  // Filtra e ordena as skins com base na pesquisa e na ordem de preço
+  // Filtra e ordena as skins com base na pesquisa e na opção de ordenação
   const filteredSkins = skins
     .filter((skin) =>
       skin.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
-      return sortOrder === "asc" ? a.price - b.price : b.price - a.price;
+      if (sortOption === "price-asc") {
+        return a.price - b.price;
+      } else if (sortOption === "price-desc") {
+        return b.price - a.price;
+      } else if (sortOption === "float-asc") {
+        return a.float - b.float;
+      } else {
+        return b.float - a.float;
+      }
     });
 
   // Função para redirecionar para o WhatsApp com o nome da skin
@@ -57,7 +65,7 @@ export function BdmSkinsShop() {
           <p className="text-gray-400">Premium CS2 Skins Marketplace</p>
         </header>
 
-        {/* Search and Price Sort Section */}
+        {/* Search and Sort Section */}
         <div className="mb-8 max-w-3xl mx-auto">
           <div className="flex gap-4 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
@@ -70,12 +78,14 @@ export function BdmSkinsShop() {
               />
             </div>
             <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value as "price-asc" | "price-desc" | "float-asc" | "float-desc")}
               className="bg-gray-800 border-gray-700 text-white p-2 rounded-md"
             >
-              <option value="asc">Menor Preço</option>
-              <option value="desc">Maior Preço</option>
+              <option value="price-asc">Menor Preço</option>
+              <option value="price-desc">Maior Preço</option>
+              <option value="float-asc">Menor Float</option>
+              <option value="float-desc">Maior Float</option>
             </select>
           </div>
         </div>
