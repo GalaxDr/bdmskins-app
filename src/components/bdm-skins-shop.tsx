@@ -13,6 +13,7 @@ interface Skin {
   float: number;
   wear: string;
   image: string;
+  inspectLink: string; // Nova propriedade para o link de inspeção
 }
 
 export function BdmSkinsShop() {
@@ -20,7 +21,6 @@ export function BdmSkinsShop() {
   const [sortOption, setSortOption] = useState<"price-asc" | "price-desc" | "float-asc" | "float-desc">("price-asc");
   const [skins, setSkins] = useState<Skin[]>([]);
 
-  // Função para buscar skins da API
   const fetchSkins = async () => {
     const response = await fetch('/api/skins');
     const data: Skin[] = await response.json();
@@ -31,7 +31,6 @@ export function BdmSkinsShop() {
     fetchSkins();
   }, []);
 
-  // Filtra e ordena as skins com base na pesquisa e na opção de ordenação
   const filteredSkins = skins
     .filter((skin) =>
       skin.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -48,7 +47,6 @@ export function BdmSkinsShop() {
       }
     });
 
-  // Função para redirecionar para o WhatsApp com o nome da skin
   const handleBuyNowClick = (skinName: string) => {
     const message = `Olá, estou interessado na skin: ${encodeURIComponent(skinName)}`;
     const whatsappLink = `https://wa.me/5551994025473?text=${message}`;
@@ -65,7 +63,6 @@ export function BdmSkinsShop() {
           <p className="text-gray-400">Premium CS2 Skins Marketplace</p>
         </header>
 
-        {/* Search and Sort Section */}
         <div className="mb-8 max-w-3xl mx-auto">
           <div className="flex gap-4 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
@@ -89,8 +86,7 @@ export function BdmSkinsShop() {
             </select>
           </div>
         </div>
-        
-        {/* Skins Grid */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredSkins.map((skin) => (
             <Card 
@@ -116,12 +112,20 @@ export function BdmSkinsShop() {
                   <div className="flex justify-between items-center">
                     <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{skin.wear}</span>
                   </div>
-                  <Button
-                    onClick={() => handleBuyNowClick(skin.name)}
-                    className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
-                  >
-                    Buy Now
-                  </Button>
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      onClick={() => handleBuyNowClick(skin.name)}
+                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600"
+                    >
+                      Buy Now
+                    </Button>
+                    <Button
+                      onClick={() => window.open(skin.inspectLink)}
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600"
+                    >
+                      Inspect
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
