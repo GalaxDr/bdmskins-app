@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,16 +10,26 @@ interface Skin {
   name: string;
   price: string;
   float: string;
-  wear: WearCondition;
+  wearId: number;
+  weaponId: number;
   image: string;
+  inspectLink: string;
 }
 
-enum WearCondition {
-  FactoryNew = "Factory New",
-  MinimalWear = "Minimal Wear",
-  FieldTested = "Field-Tested",
-  WellWorn = "Well-Worn",
-  BattleScarred = "Battle-Scarred"
+interface Wear {
+  id: number;
+  name: string;
+}
+
+interface WeaponType {
+  id: number;
+  name: string;
+}
+
+interface Weapon {
+  id: number;
+  name: string;
+  weaponTypeId: number;
 }
 
 export default function AdminPage() {
@@ -29,19 +39,27 @@ export default function AdminPage() {
   const [skins, setSkins] = useState<Skin[]>([]);
   const [editingSkin, setEditingSkin] = useState<Skin | null>(null);
 
-  // Estado para os campos do formulário
+  const [wears, setWears] = useState<Wear[]>([]);
+  const [weaponTypes, setWeaponTypes] = useState<WeaponType[]>([]);
+  const [weapons, setWeapons] = useState<Weapon[]>([]);
+
   const [newSkin, setNewSkin] = useState<Omit<Skin, 'id'>>({
     name: "",
     price: "",
     float: "",
-    wear: WearCondition.FactoryNew,
-    image: ""
+    wearId: 0,
+    weaponId: 0,
+    image: "",
+    inspectLink: ""
   });
 
   const handleLogin = () => {
-    if (username === 'bondedosmaloka' && password === 'bdm123') {
+    if (username === '123' && password === '123') {
       setIsAuthenticated(true);
       fetchSkins();
+      fetchWears();
+      fetchWeaponTypes();
+      fetchWeapons();
     } else {
       alert('Credenciais inválidas');
     }
@@ -53,26 +71,39 @@ export default function AdminPage() {
     setSkins(data);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (editingSkin) {
-      setEditingSkin({ ...editingSkin, [name]: value });
-    } else {
-      setNewSkin((prev) => ({ ...prev, [name]: value }));
-    }
+  const fetchWears = async () => {
+    const response = await fetch('/api/wears');
+    const data: Wear[] = await response.json();
+    setWears(data);
   };
 
-  const handleWearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const wear = e.target.value as WearCondition;
-    if (editingSkin) {
-      setEditingSkin({ ...editingSkin, wear });
-    } else {
-      setNewSkin((prev) => ({ ...prev, wear }));
-    }
+  const fetchWeaponTypes = async () => {
+    const response = await fetch('/api/weapon_types');
+    const data: WeaponType[] = await response.json();
+    setWeaponTypes(data);
+  };
+
+  const fetchWeapons = async () => {
+    const response = await fetch('/api/weapons');
+    const data: Weapon[] = await response.json();
+    setWeapons(data);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewSkin((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setNewSkin((prev) => ({ ...prev, [name]: parseInt(value) }));
   };
 
   const addSkin = async () => {
-    if (!newSkin.name || !newSkin.price || !newSkin.float || !newSkin.image) {
+    if (!newSkin.name || !newSkin.price || !newSkin.float || !newSkin.image || !newSkin.inspectLink || !newSkin.wearId || !newSkin.weaponId) {
       alert("Preencha todos os campos antes de adicionar a skin.");
       return;
     }
@@ -84,7 +115,7 @@ export default function AdminPage() {
     });
 
     fetchSkins();
-    setNewSkin({ name: "", price: "", float: "", wear: WearCondition.FactoryNew, image: "" });
+    setNewSkin({ name: "", price: "", float: "", wearId: 0, weaponId: 0, image: "", inspectLink: "" });
   };
 
   const updateSkin = async () => {
@@ -92,11 +123,7 @@ export default function AdminPage() {
       await fetch(`/api/skins`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...editingSkin,
-          price: parseFloat(editingSkin.price),
-          float: parseFloat(editingSkin.float),
-        }),
+        body: JSON.stringify(editingSkin),
       });
 
       fetchSkins();
@@ -164,21 +191,38 @@ export default function AdminPage() {
               className="mb-4 bg-gray-700 text-white"
             />
             <select
-              name="wear"
-              value={newSkin.wear}
-              onChange={handleWearChange}
+              name="wearId"
+              value={newSkin.wearId}
+              onChange={handleSelectChange}
               className="mb-4 bg-gray-700 text-white w-full p-2 rounded-md"
             >
-              {Object.values(WearCondition).map((condition) => (
-                <option key={condition} value={condition}>
-                  {condition}
-                </option>
+              <option value="">Selecione a Condição</option>
+              {wears.map((wear) => (
+                <option key={wear.id} value={wear.id}>{wear.name}</option>
+              ))}
+            </select>
+            <select
+              name="weaponId"
+              value={newSkin.weaponId}
+              onChange={handleSelectChange}
+              className="mb-4 bg-gray-700 text-white w-full p-2 rounded-md"
+            >
+              <option value="">Selecione a Arma</option>
+              {weapons.map((weapon) => (
+                <option key={weapon.id} value={weapon.id}>{weapon.name}</option>
               ))}
             </select>
             <Input
               name="image"
               placeholder="URL da Imagem"
               value={newSkin.image}
+              onChange={handleInputChange}
+              className="mb-4 bg-gray-700 text-white"
+            />
+            <Input
+              name="inspectLink"
+              placeholder="URL do Inspecionar"
+              value={newSkin.inspectLink}
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
@@ -195,71 +239,23 @@ export default function AdminPage() {
                   <CardTitle className="text-xl text-white">{skin.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
-                  {editingSkin?.id === skin.id ? (
-                    <div>
-                      <Input
-                        name="name"
-                        placeholder="Nome da Skin"
-                        value={editingSkin.name}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <Input
-                        name="price"
-                        placeholder="Preço"
-                        value={editingSkin.price}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <Input
-                        name="float"
-                        placeholder="Float"
-                        value={editingSkin.float}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <select
-                        name="wear"
-                        value={editingSkin.wear}
-                        onChange={handleWearChange}
-                        className="mb-2 bg-gray-800 text-white w-full p-2 rounded-md"
-                      >
-                        {Object.values(WearCondition).map((condition) => (
-                          <option key={condition} value={condition}>
-                            {condition}
-                          </option>
-                        ))}
-                      </select>
-                      <Input
-                        name="image"
-                        placeholder="URL da Imagem"
-                        value={editingSkin.image}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <Button onClick={updateSkin} className="bg-green-600 w-full mt-2">
-                        Save Changes
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                      <p>Price: {skin.price}</p>
-                      <p>Float: {skin.float}</p>
-                      <p>Wear: {skin.wear}</p>
-                      <Button
-                        onClick={() => setEditingSkin(skin)}
-                        className="mt-4 bg-yellow-600 w-full"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        onClick={() => deleteSkin(skin.id)}
-                        className="mt-2 bg-red-600 w-full"
-                      >
-                        Delete Skin
-                      </Button>
-                    </>
-                  )}
+                  <p>Price: {skin.price}</p>
+                  <p>Float: {skin.float}</p>
+                  <p>Inspect Link: <a href={skin.inspectLink} target="_blank" className="text-blue-400">Inspecionar</a></p>
+                  <p>Wear: {wears.find((w) => w.id === skin.wearId)?.name || "N/A"}</p>
+                  <p>Weapon: {weapons.find((w) => w.id === skin.weaponId)?.name || "N/A"}</p>
+                  <Button
+                    onClick={() => setEditingSkin(skin)}
+                    className="mt-4 bg-yellow-600 w-full"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => deleteSkin(skin.id)}
+                    className="mt-2 bg-red-600 w-full"
+                  >
+                    Delete Skin
+                  </Button>
                 </CardContent>
               </Card>
             ))}
