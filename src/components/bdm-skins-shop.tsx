@@ -74,31 +74,31 @@ export function BdmSkinsShop() {
               className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
             >
               <CardHeader className="p-4">
-                <div className="aspect-square relative bg-gray-900 rounded-lg overflow-hidden">
-                  <img
-                    src={skin.image}
-                    alt={skin.name}
-                    className="object-contain w-3/4 h-3/4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
+              <div className="aspect-square relative bg-gray-900 rounded-lg overflow-hidden">
+                <img
+                src={skin.image}
+                alt={skin.name}
+                className="object-contain w-3/4 h-3/4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                />
+              </div>
               </CardHeader>
               <CardContent className="p-4 pt-0 flex flex-col flex-grow">
-                <CardTitle className="text-md mb-2 text-gray-100">{skin.name}</CardTitle>
-                <div className="space-y-2 flex-grow">
-                  <p className="text-xl font-bold text-blue-400">R${skin.price.toFixed(2)}</p>
-                  <div className="flex justify-between items-center text-sm text-gray-400">
-                    <span>Float: {skin.float.toFixed(8)}</span>
-                    <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">
-                      {skin.wear}
-                    </span>
-                  </div>
+              <CardTitle className="text-md mb-2 text-gray-100">{skin.name}</CardTitle>
+              <div className="flex flex-col space-y-2 flex-grow">
+                <div className="flex justify-between items-center">
+                <p className="text-xl font-bold text-blue-400">R${skin.price.toFixed(2)}</p>
+                <span className="text-sm text-gray-400">Float: {skin.float.toFixed(8)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{skin.wear}</span>
                 </div>
                 <Button
-                  onClick={() => handleBuyNowClick(skin.name)}
-                  className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
+                onClick={() => handleBuyNowClick(skin.name)}
+                className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
                 >
-                  Buy Now
+                Buy Now
                 </Button>
+              </div>
               </CardContent>
             </Card>
           ))}
