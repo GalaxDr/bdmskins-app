@@ -17,6 +17,7 @@ interface Skin {
 
 export function BdmSkinsShop() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [skins, setSkins] = useState<Skin[]>([]);
 
   // Função para buscar skins da API
@@ -30,9 +31,14 @@ export function BdmSkinsShop() {
     fetchSkins();
   }, []);
 
-  const filteredSkins = skins.filter((skin) =>
-    skin.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filtra e ordena as skins com base na pesquisa e na ordem de preço
+  const filteredSkins = skins
+    .filter((skin) =>
+      skin.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      return sortOrder === "asc" ? a.price - b.price : b.price - a.price;
+    });
 
   // Função para redirecionar para o WhatsApp com o nome da skin
   const handleBuyNowClick = (skinName: string) => {
@@ -51,7 +57,7 @@ export function BdmSkinsShop() {
           <p className="text-gray-400">Premium CS2 Skins Marketplace</p>
         </header>
 
-        {/* Search Section */}
+        {/* Search and Price Sort Section */}
         <div className="mb-8 max-w-3xl mx-auto">
           <div className="flex gap-4 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
@@ -63,6 +69,14 @@ export function BdmSkinsShop() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+              className="bg-gray-800 border-gray-700 text-white p-2 rounded-md"
+            >
+              <option value="asc">Menor Preço</option>
+              <option value="desc">Maior Preço</option>
+            </select>
           </div>
         </div>
         
@@ -74,31 +88,31 @@ export function BdmSkinsShop() {
               className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
             >
               <CardHeader className="p-4">
-              <div className="aspect-square relative bg-gray-900 rounded-lg overflow-hidden">
-                <img
-                src={skin.image}
-                alt={skin.name}
-                className="object-contain w-3/4 h-3/4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-300"
-                />
-              </div>
+                <div className="aspect-square relative bg-gray-900 rounded-lg overflow-hidden">
+                  <img
+                    src={skin.image}
+                    alt={skin.name}
+                    className="object-contain w-3/4 h-3/4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
               </CardHeader>
               <CardContent className="p-4 pt-0 flex flex-col flex-grow">
-              <CardTitle className="text-md mb-2 text-gray-100">{skin.name}</CardTitle>
-              <div className="flex flex-col space-y-2 flex-grow">
-                <div className="flex justify-between items-center">
-                <p className="text-xl font-bold text-blue-400">R${skin.price.toFixed(2)}</p>
-                <span className="text-sm text-gray-400">Float: {skin.float.toFixed(8)}</span>
+                <CardTitle className="text-md mb-2 text-gray-100">{skin.name}</CardTitle>
+                <div className="flex flex-col space-y-2 flex-grow">
+                  <div className="flex justify-between items-center">
+                    <p className="text-xl font-bold text-blue-400">R${skin.price.toFixed(2)}</p>
+                    <span className="text-sm text-gray-400">Float: {skin.float.toFixed(8)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{skin.wear}</span>
+                  </div>
+                  <Button
+                    onClick={() => handleBuyNowClick(skin.name)}
+                    className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
+                  >
+                    Buy Now
+                  </Button>
                 </div>
-                <div className="flex justify-between items-center">
-                <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{skin.wear}</span>
-                </div>
-                <Button
-                onClick={() => handleBuyNowClick(skin.name)}
-                className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
-                >
-                Buy Now
-                </Button>
-              </div>
               </CardContent>
             </Card>
           ))}
