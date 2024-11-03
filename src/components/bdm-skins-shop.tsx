@@ -133,8 +133,7 @@ export function BdmSkinsShop() {
                 </div>
               </CardHeader>
               <CardContent className="p-4 pt-0 flex flex-col flex-grow">
-                <CardTitle className="text-md mb-2 text-gray-100">{item.name}</CardTitle>
-                <p className="text-sm text-gray-500 mb-1">{item.weapon} ({item.weaponType})</p>
+                <CardTitle className="text-md mb-2 text-gray-100">{item.weapon} | {item.name}</CardTitle>
                 <div className="flex flex-col space-y-2 flex-grow">
                   <div className="flex justify-between items-center">
                     <p className="text-xl font-bold text-blue-400">R${item.price.toFixed(2)}</p>

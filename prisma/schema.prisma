@@ -21,7 +21,7 @@ model WeaponType {
 
 model Weapon {
   id            Int         @id @default(autoincrement())
-  name          String
+  name          String      @unique
   weaponTypeId  Int
   weaponType    WeaponType  @relation(fields: [weaponTypeId], references: [id])
   skinWeapons   SkinWeapon[]

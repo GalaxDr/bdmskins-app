@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 interface Skin {
   id: number;
   name: string;
+  weaponId: number;
 }
 
 interface Wear {
@@ -49,7 +50,7 @@ export default function AdminPage() {
   const [skinItems, setSkinItems] = useState<SkinItem[]>([]);
 
   const [newSkinItem, setNewSkinItem] = useState({
-    id: null as number | null, // Agora usamos o ID do SkinItem para edição
+    id: null as number | null,
     skinWeaponId: null as number | null,
     skinId: null as number | null,
     weaponId: null as number | null,
@@ -59,6 +60,26 @@ export default function AdminPage() {
     imgLink: "",
     inspectLink: "",
   });
+
+  function getWearIdFromFloat(floatValue: number): number {
+    if (floatValue >= 0.0 && floatValue <= 0.07) return 1;
+    if (floatValue > 0.07 && floatValue <= 0.15) return 2;
+    if (floatValue > 0.15 && floatValue <= 0.38) return 3;
+    if (floatValue > 0.38 && floatValue <= 0.45) return 4;
+    if (floatValue > 0.45 && floatValue <= 1.0) return 5;
+    throw new Error("Invalid float value for wear");
+  }
+
+  function handleFloatChange(float: string) {
+    const floatValue = parseFloat(float);
+    if (isNaN(floatValue)) return;
+    const wearId = getWearIdFromFloat(floatValue);
+    setNewSkinItem((prev) => ({
+      ...prev,
+      float: float,
+      wearId: wearId,
+    }));
+  }
 
   const [editing, setEditing] = useState(false);
 
@@ -109,28 +130,15 @@ export default function AdminPage() {
     setNewSkinItem((prev) => ({ ...prev, [name]: parseInt(value) || null }));
   };
 
-  const handleSkinSearch = async (query: string) => {
-    setSearchQuery(query);
-    if (query.length > 1) {
-      const response = await fetch(`/api/skins?search=${query}`);
+  const handleWeaponChange = async (weaponId: number) => {
+    setNewSkinItem((prev) => ({ ...prev, weaponId }));
+    
+    try {
+      const response = await fetch(`/api/skinsByWeaponId?weaponId=${weaponId}`);
       const data: Skin[] = await response.json();
       setFilteredSkins(data);
-    } else {
-      setFilteredSkins([]);
-    }
-  };
-
-  const fetchSkinWeaponId = async (skinId: number, weaponId: number) => {
-    try {
-      const response = await fetch(`/api/skinweapon?skinId=${skinId}&weaponId=${weaponId}`);
-      const data = await response.json();
-      if (data && data.id) {
-        setNewSkinItem((prev) => ({ ...prev, skinWeaponId: data.id }));
-      } else {
-        alert("Combinação de Skin e Arma não encontrada.");
-      }
     } catch (error) {
-      console.error("Erro ao buscar skinWeaponId:", error);
+      console.error("Failed to fetch skins for weapon:", error);
     }
   };
 
@@ -142,7 +150,7 @@ export default function AdminPage() {
       return;
     }
 
-    const endpoint = id ? `/api/skinitem/${id}` : '/api/skinitem'; // Usa o ID do SkinItem para PUT
+    const endpoint = id ? `/api/skinitem/${id}` : '/api/skinitem';
     const method = id ? 'PUT' : 'POST';
 
     await fetch(endpoint, {
@@ -193,7 +201,7 @@ export default function AdminPage() {
       await fetch(`/api/skinitem/${id}`, {
         method: 'DELETE',
       });
-      fetchSkinItems(); // Atualiza a lista após deletar
+      fetchSkinItems();
     }
   };
 
@@ -234,13 +242,7 @@ export default function AdminPage() {
               id="weaponId"
               name="weaponId"
               value={newSkinItem.weaponId || ""}
-              onChange={(e) => {
-                handleSelectChange(e);
-                const weaponId = parseInt(e.target.value);
-                if (newSkinItem.skinId && weaponId) {
-                  fetchSkinWeaponId(newSkinItem.skinId, weaponId);
-                }
-              }}
+              onChange={(e) => handleWeaponChange(parseInt(e.target.value))}
               className="mb-4 bg-gray-700 text-white w-full p-2 rounded-md"
             >
               <option value="">Selecione a Arma</option>
@@ -249,34 +251,18 @@ export default function AdminPage() {
               ))}
             </select>
 
-            <Input
-              id="search"
-              name="search"
-              placeholder="Search Skin..."
-              value={searchQuery}
-              onChange={(e) => handleSkinSearch(e.target.value)}
-              className="mb-4 bg-gray-700 text-white"
-            />
-            {filteredSkins.length > 0 && (
-              <ul className="bg-gray-700 rounded-lg max-h-40 overflow-y-auto">
-                {filteredSkins.map((skin) => (
-                  <li
-                    key={skin.id}
-                    onClick={() => {
-                      setNewSkinItem((prev) => ({ ...prev, skinId: skin.id }));
-                      setFilteredSkins([]);
-                      setSearchQuery(skin.name);
-                      if (newSkinItem.weaponId) {
-                        fetchSkinWeaponId(skin.id, newSkinItem.weaponId);
-                      }
-                    }}
-                    className="p-2 cursor-pointer hover:bg-gray-600"
-                  >
-                    {skin.name}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <select
+              id="skinId"
+              name="skinId"
+              value={newSkinItem.skinId || ""}
+              onChange={(e) => handleSelectChange(e)}
+              className="mb-4 bg-gray-700 text-white w-full p-2 rounded-md"
+            >
+              <option value="">Selecione a Skin</option>
+              {filteredSkins.map((skin) => (
+                <option key={skin.id} value={skin.id}>{skin.name}</option>
+              ))}
+            </select>
 
             <Input
               id="price"
@@ -291,20 +277,9 @@ export default function AdminPage() {
               name="float"
               placeholder="Float"
               value={newSkinItem.float}
-              onChange={handleInputChange}
+              onChange={(e) => handleFloatChange(e.target.value)}
               className="mb-4 bg-gray-700 text-white"
             />
-            <select
-              id="wearId"
-              name="wearId"
-              value={newSkinItem.wearId || ""}
-              onChange={handleSelectChange}
-              className="mb-4 bg-gray-700 text-white w-full p-2 rounded-md"
-            >
-              {wears.map((wear) => (
-                <option key={wear.id} value={wear.id}>{wear.name}</option>
-              ))}
-            </select>
             <Input
               id="imgLink"
               name="imgLink"
@@ -352,11 +327,11 @@ export default function AdminPage() {
 
           <div className="bg-gray-800 p-6 rounded-lg">
             <h2 className="text-xl font-bold mb-4">Existing Skin Items</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
               {skinItems.map((item) => (
-                <div key={item.id} className="bg-gray-900 p-4 rounded-lg shadow-lg max-w-xs">
-                  <img src={item.imgLink} alt={item.skinWeapon.skin.name} className="w-32 h-32 object-cover rounded-md mb-4" />
-                  <div className="flex justify-between items-center mb-2">
+                <div key={item.id} className="bg-gray-900 p-4 rounded-lg shadow-lg">
+                  <img src={item.imgLink} alt={item.skinWeapon.skin.name} className="w-32 h-32 object-cover rounded-md mb-2 mx-auto" />
+                  <div className="flex justify-between mb-2">
                     <span className="font-bold">{item.skinWeapon.skin.name}</span>
                     <span className="text-blue-400">R${item.price.toFixed(2)}</span>
                   </div>
