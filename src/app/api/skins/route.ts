@@ -1,42 +1,53 @@
 import { NextResponse } from 'next/server';
 import prisma from 'lib/prisma';
+import { Prisma } from '@prisma/client';
 
-export async function GET() {
-  // Inclui as relações de `skin`, `wear`, `weapon`, e `weapon_type` para retorno completo
-  const skins = await prisma.skinItem.findMany({
-    include: {
-      skinWeapon: {
-        include: {
-          skin: true,
-          weapon: {
-            include: {
-              weaponType: true,
-            },
-          },
-        },
+export async function GET(request: Request) {
+  // Obtém o parâmetro `search` da URL
+  const url = new URL(request.url);
+  const search = url.searchParams.get("search");
+
+  // Condição de filtro: se `search` estiver presente, busca por nome parcial
+  const whereCondition = search
+    ? {
+        name: {
+          contains: search,
+          mode: Prisma.QueryMode.insensitive // Ignora maiúsculas/minúsculas
+        }
+      }
+    : {};
+
+  try {
+    // Busca as skins que correspondem ao `search`, se aplicável
+    const skins = await prisma.skin.findMany({
+      where: whereCondition,
+      select: {
+        id: true,
+        name: true,
       },
-      wear: true,
-    },
-  });
-  return NextResponse.json(skins);
+      take: 10, // Limita o número de resultados para melhorar desempenho
+    });
+
+    return NextResponse.json(skins);
+  } catch (error) {
+    console.error("Search failed:", error);
+    return NextResponse.json({ error: "Search failed" }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
   const data = await request.json();
 
   try {
-    // Cria o registro na tabela `skin_item` e conecta aos dados de `skin_weapon` e `wear`
-    const newSkinItem = await prisma.skinItem.create({
+    // Cria um novo registro na tabela `SkinWeapon`
+    const newSkinWeapon = await prisma.skinWeapon.create({
       data: {
-        skinWeapon: { connect: { id: data.skinWeaponId } },
-        wear: { connect: { id: data.wearId } },
-        float: parseFloat(data.float),
-        price: parseFloat(data.price),
-        inspectLink: data.inspectLink,
-        imgLink: data.imgLink,
+        skin: { connect: { id: data.skinId } },
+        weapon: { connect: { id: data.weaponId } },
       },
     });
-    return NextResponse.json(newSkinItem);
+
+    return NextResponse.json(newSkinWeapon);
   } catch (error) {
     console.error("Create failed:", error);
     return NextResponse.json({ error: "Create failed" }, { status: 500 });
@@ -44,22 +55,19 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const { id, ...data } = await request.json();
+  const { id, skinId, weaponId } = await request.json();
 
   try {
-    // Atualiza um item de skin existente e converte os valores adequados
-    const updatedSkinItem = await prisma.skinItem.update({
+    // Atualiza um registro existente em `SkinWeapon`
+    const updatedSkinWeapon = await prisma.skinWeapon.update({
       where: { id },
       data: {
-        skinWeapon: { connect: { id: data.skinWeaponId } },
-        wear: { connect: { id: data.wearId } },
-        float: parseFloat(data.float),
-        price: parseFloat(data.price),
-        inspectLink: data.inspectLink,
-        imgLink: data.imgLink,
+        skin: { connect: { id: skinId } },
+        weapon: { connect: { id: weaponId } },
       },
     });
-    return NextResponse.json(updatedSkinItem);
+
+    return NextResponse.json(updatedSkinWeapon);
   } catch (error) {
     console.error("Update failed:", error);
     return NextResponse.json({ error: "Update failed" }, { status: 500 });
@@ -70,10 +78,10 @@ export async function DELETE(request: Request) {
   const { id } = await request.json();
 
   try {
-    await prisma.skinItem.delete({
+    await prisma.skinWeapon.delete({
       where: { id },
     });
-    return NextResponse.json({ message: 'Skin item deleted' });
+    return NextResponse.json({ message: 'Skin weapon association deleted' });
   } catch (error) {
     console.error("Delete failed:", error);
     return NextResponse.json({ error: "Delete failed" }, { status: 500 });
@@ -88,18 +96,15 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const updatedSkinItem = await prisma.skinItem.update({
+    const updatedSkinWeapon = await prisma.skinWeapon.update({
       where: { id },
       data: {
-        skinWeapon: { connect: { id: data.skinWeaponId } },
-        wear: { connect: { id: data.wearId } },
-        float: parseFloat(data.float),
-        price: parseFloat(data.price),
-        inspectLink: data.inspectLink,
-        imgLink: data.imgLink,
+        skin: { connect: { id: data.skinId } },
+        weapon: { connect: { id: data.weaponId } },
       },
     });
-    return NextResponse.json(updatedSkinItem);
+
+    return NextResponse.json(updatedSkinWeapon);
   } catch (error) {
     console.error("Update failed:", error);
     return NextResponse.json({ error: "Update failed" }, { status: 500 });
