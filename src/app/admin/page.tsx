@@ -1,118 +1,200 @@
-'use client'
+'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 interface Skin {
   id: number;
   name: string;
-  price: string;
-  float: string;
-  wear: WearCondition;
-  image: string;
-  inspectLink: string;
 }
 
-enum WearCondition {
-  FactoryNew = "Factory New",
-  MinimalWear = "Minimal Wear",
-  FieldTested = "Field-Tested",
-  WellWorn = "Well-Worn",
-  BattleScarred = "Battle-Scarred"
+interface Wear {
+  id: number;
+  name: string;
+}
+
+interface Weapon {
+  id: number;
+  name: string;
+  weaponType: {
+    id: number;
+    name: string;
+  };
+}
+
+interface SkinItem {
+  id: number;
+  price: number;
+  float: number;
+  wearId: number;
+  imgLink: string;
+  inspectLink: string;
+  skinWeaponId: number;
+  skinWeapon: {
+    skin: Skin;
+    weapon: Weapon;
+  };
+  wear: Wear;
 }
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [skins, setSkins] = useState<Skin[]>([]);
-  const [editingSkin, setEditingSkin] = useState<Skin | null>(null);
+  const [filteredSkins, setFilteredSkins] = useState<Skin[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [wears, setWears] = useState<Wear[]>([]);
+  const [weapons, setWeapons] = useState<Weapon[]>([]);
+  const [skinItems, setSkinItems] = useState<SkinItem[]>([]);
 
-  // Estado para os campos do formulário
-  const [newSkin, setNewSkin] = useState<Omit<Skin, 'id'>>({
-    name: "",
+  const [newSkinItem, setNewSkinItem] = useState({
+    id: null as number | null, // Agora usamos o ID do SkinItem para edição
+    skinWeaponId: null as number | null,
+    skinId: null as number | null,
+    weaponId: null as number | null,
     price: "",
     float: "",
-    wear: WearCondition.FactoryNew,
-    image: "",
-    inspectLink: "" // Adicionando o campo inspectLink
+    wearId: null as number | null,
+    imgLink: "",
+    inspectLink: "",
   });
+
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchSkinItems();
+      fetchWears();
+      fetchWeapons();
+    }
+  }, [isAuthenticated]);
 
   const handleLogin = () => {
     if (username === '123' && password === '123') {
       setIsAuthenticated(true);
-      fetchSkins();
     } else {
       alert('Credenciais inválidas');
     }
   };
 
-  const fetchSkins = async () => {
-    const response = await fetch('/api/skins');
-    const data: Skin[] = await response.json();
-    setSkins(data);
+  const fetchWears = async () => {
+    const response = await fetch('/api/wears');
+    const data: Wear[] = await response.json();
+    setWears(data);
+  };
+
+  const fetchWeapons = async () => {
+    const response = await fetch('/api/weapons');
+    const data: Weapon[] = await response.json();
+    setWeapons(data);
+  };
+
+  const fetchSkinItems = async () => {
+    const response = await fetch('/api/skinitem');
+    const data: SkinItem[] = await response.json();
+    setSkinItems(data);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (editingSkin) {
-      setEditingSkin({ ...editingSkin, [name]: value });
+    setNewSkinItem((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setNewSkinItem((prev) => ({ ...prev, [name]: parseInt(value) || null }));
+  };
+
+  const handleSkinSearch = async (query: string) => {
+    setSearchQuery(query);
+    if (query.length > 1) {
+      const response = await fetch(`/api/skins?search=${query}`);
+      const data: Skin[] = await response.json();
+      setFilteredSkins(data);
     } else {
-      setNewSkin((prev) => ({ ...prev, [name]: value }));
+      setFilteredSkins([]);
     }
   };
 
-  const handleWearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const wear = e.target.value as WearCondition;
-    if (editingSkin) {
-      setEditingSkin({ ...editingSkin, wear });
-    } else {
-      setNewSkin((prev) => ({ ...prev, wear }));
+  const fetchSkinWeaponId = async (skinId: number, weaponId: number) => {
+    try {
+      const response = await fetch(`/api/skinweapon?skinId=${skinId}&weaponId=${weaponId}`);
+      const data = await response.json();
+      if (data && data.id) {
+        setNewSkinItem((prev) => ({ ...prev, skinWeaponId: data.id }));
+      } else {
+        alert("Combinação de Skin e Arma não encontrada.");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar skinWeaponId:", error);
     }
   };
 
-  const addSkin = async () => {
-    if (!newSkin.name || !newSkin.price || !newSkin.float || !newSkin.image || !newSkin.inspectLink) {
-      alert("Preencha todos os campos antes de adicionar a skin.");
+  const addOrUpdateSkinItem = async () => {
+    const { id, skinWeaponId, price, float, wearId, imgLink, inspectLink } = newSkinItem;
+
+    if (!skinWeaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim() || wearId === null) {
+      alert("Preencha todos os campos antes de adicionar o produto.");
       return;
     }
 
-    await fetch('/api/skins', {
-      method: 'POST',
+    const endpoint = id ? `/api/skinitem/${id}` : '/api/skinitem'; // Usa o ID do SkinItem para PUT
+    const method = id ? 'PUT' : 'POST';
+
+    await fetch(endpoint, {
+      method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newSkin),
+      body: JSON.stringify({
+        skinWeaponId,
+        price: parseFloat(price),
+        float: parseFloat(float),
+        wearId,
+        imgLink,
+        inspectLink,
+      }),
     });
 
-    fetchSkins();
-    setNewSkin({ name: "", price: "", float: "", wear: WearCondition.FactoryNew, image: "", inspectLink: "" });
+    setNewSkinItem({
+      id: null,
+      skinWeaponId: null,
+      skinId: null,
+      weaponId: null,
+      price: "",
+      float: "",
+      wearId: null,
+      imgLink: "",
+      inspectLink: "",
+    });
+    setEditing(false);
+    fetchSkinItems();
   };
 
-  const updateSkin = async () => {
-    if (editingSkin) {
-      await fetch(`/api/skins`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...editingSkin,
-          price: parseFloat(editingSkin.price),
-          float: parseFloat(editingSkin.float),
-        }),
+  const editSkinItem = (item: SkinItem) => {
+    setNewSkinItem({
+      id: item.id,
+      skinWeaponId: item.skinWeaponId,
+      skinId: item.skinWeapon.skin.id,
+      weaponId: item.skinWeapon.weapon.id,
+      price: item.price.toString(),
+      float: item.float.toString(),
+      wearId: item.wearId,
+      imgLink: item.imgLink,
+      inspectLink: item.inspectLink,
+    });
+    setEditing(true);
+  };
+
+  const deleteSkinItem = async (id: number) => {
+    if (confirm("Tem certeza de que deseja deletar esta skin?")) {
+      await fetch(`/api/skinitem/${id}`, {
+        method: 'DELETE',
       });
-
-      fetchSkins();
-      setEditingSkin(null);
+      fetchSkinItems(); // Atualiza a lista após deletar
     }
-  };
-
-  const deleteSkin = async (id: number) => {
-    await fetch('/api/skins', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    fetchSkins();
   };
 
   return (
@@ -121,12 +203,16 @@ export default function AdminPage() {
         <div className="max-w-md mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
           <Input
+            id="username"
+            name="username"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="mb-4 bg-gray-700 text-white"
           />
           <Input
+            id="password"
+            name="password"
             type="password"
             placeholder="Password"
             value={password}
@@ -141,145 +227,157 @@ export default function AdminPage() {
         <div>
           <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
-          {/* Formulário para adicionar uma nova skin */}
           <div className="mb-8 bg-gray-800 p-6 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Adicionar Nova Skin</h2>
+            <h2 className="text-xl font-bold mb-4">{editing ? "Edit Skin Item" : "Add New Skin Item"}</h2>
+
+            <select
+              id="weaponId"
+              name="weaponId"
+              value={newSkinItem.weaponId || ""}
+              onChange={(e) => {
+                handleSelectChange(e);
+                const weaponId = parseInt(e.target.value);
+                if (newSkinItem.skinId && weaponId) {
+                  fetchSkinWeaponId(newSkinItem.skinId, weaponId);
+                }
+              }}
+              className="mb-4 bg-gray-700 text-white w-full p-2 rounded-md"
+            >
+              <option value="">Selecione a Arma</option>
+              {weapons.map((weapon) => (
+                <option key={weapon.id} value={weapon.id}>{weapon.name}</option>
+              ))}
+            </select>
+
             <Input
-              name="name"
-              placeholder="Nome da Skin"
-              value={newSkin.name}
-              onChange={handleInputChange}
+              id="search"
+              name="search"
+              placeholder="Search Skin..."
+              value={searchQuery}
+              onChange={(e) => handleSkinSearch(e.target.value)}
               className="mb-4 bg-gray-700 text-white"
             />
+            {filteredSkins.length > 0 && (
+              <ul className="bg-gray-700 rounded-lg max-h-40 overflow-y-auto">
+                {filteredSkins.map((skin) => (
+                  <li
+                    key={skin.id}
+                    onClick={() => {
+                      setNewSkinItem((prev) => ({ ...prev, skinId: skin.id }));
+                      setFilteredSkins([]);
+                      setSearchQuery(skin.name);
+                      if (newSkinItem.weaponId) {
+                        fetchSkinWeaponId(skin.id, newSkinItem.weaponId);
+                      }
+                    }}
+                    className="p-2 cursor-pointer hover:bg-gray-600"
+                  >
+                    {skin.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+
             <Input
+              id="price"
               name="price"
               placeholder="Preço"
-              value={newSkin.price}
+              value={newSkinItem.price}
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
             <Input
+              id="float"
               name="float"
               placeholder="Float"
-              value={newSkin.float}
+              value={newSkinItem.float}
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
             <select
-              name="wear"
-              value={newSkin.wear}
-              onChange={handleWearChange}
+              id="wearId"
+              name="wearId"
+              value={newSkinItem.wearId || ""}
+              onChange={handleSelectChange}
               className="mb-4 bg-gray-700 text-white w-full p-2 rounded-md"
             >
-              {Object.values(WearCondition).map((condition) => (
-                <option key={condition} value={condition}>
-                  {condition}
-                </option>
+              {wears.map((wear) => (
+                <option key={wear.id} value={wear.id}>{wear.name}</option>
               ))}
             </select>
             <Input
-              name="image"
+              id="imgLink"
+              name="imgLink"
               placeholder="URL da Imagem"
-              value={newSkin.image}
+              value={newSkinItem.imgLink}
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
             <Input
+              id="inspectLink"
               name="inspectLink"
-              placeholder="Link de Inspect"
-              value={newSkin.inspectLink}
+              placeholder="URL do Inspecionar"
+              value={newSkinItem.inspectLink}
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
-            <Button onClick={addSkin} className="w-full bg-green-600">
-              Adicionar Skin
+            <Button
+              onClick={addOrUpdateSkinItem}
+              className="w-full bg-green-600"
+            >
+              {editing ? "Save Changes" : "Add Skin Item"}
             </Button>
+            {editing && (
+              <Button
+                onClick={() => {
+                  setEditing(false);
+                  setNewSkinItem({
+                    id: null,
+                    skinWeaponId: null,
+                    skinId: null,
+                    weaponId: null,
+                    price: "",
+                    float: "",
+                    wearId: null,
+                    imgLink: "",
+                    inspectLink: "",
+                  });
+                }}
+                className="w-full mt-2 bg-red-600"
+              >
+                Cancel
+              </Button>
+            )}
           </div>
 
-          {/* Lista de skins com opção de edição */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skins.map((skin) => (
-              <Card key={skin.id} className="bg-gray-800 border-gray-700">
-                <CardHeader className="p-4">
-                  <CardTitle className="text-xl text-white">{skin.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4">
-                  {editingSkin?.id === skin.id ? (
-                    <div>
-                      <Input
-                        name="name"
-                        placeholder="Nome da Skin"
-                        value={editingSkin.name}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <Input
-                        name="price"
-                        placeholder="Preço"
-                        value={editingSkin.price}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <Input
-                        name="float"
-                        placeholder="Float"
-                        value={editingSkin.float}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <select
-                        name="wear"
-                        value={editingSkin.wear}
-                        onChange={handleWearChange}
-                        className="mb-2 bg-gray-800 text-white w-full p-2 rounded-md"
-                      >
-                        {Object.values(WearCondition).map((condition) => (
-                          <option key={condition} value={condition}>
-                            {condition}
-                          </option>
-                        ))}
-                      </select>
-                      <Input
-                        name="image"
-                        placeholder="URL da Imagem"
-                        value={editingSkin.image}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <Input
-                        name="inspectLink"
-                        placeholder="Link de Inspect"
-                        value={editingSkin.inspectLink}
-                        onChange={handleInputChange}
-                        className="mb-2 bg-gray-800 text-white"
-                      />
-                      <Button onClick={updateSkin} className="bg-green-600 w-full mt-2">
-                        Save Changes
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                      <p>Price: {skin.price}</p>
-                      <p>Float: {skin.float}</p>
-                      <p>Wear: {skin.wear}</p>
-                      <p>Inspect Link: <a href={skin.inspectLink} target="_blank" rel="noopener noreferrer" className="text-blue-400">View Inspect</a></p>
-                      <Button
-                        onClick={() => setEditingSkin(skin)}
-                        className="mt-4 bg-yellow-600 w-full"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        onClick={() => deleteSkin(skin.id)}
-                        className="mt-2 bg-red-600 w-full"
-                      >
-                        Delete Skin
-                      </Button>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Existing Skin Items</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+              {skinItems.map((item) => (
+                <div key={item.id} className="bg-gray-900 p-4 rounded-lg shadow-lg max-w-xs">
+                  <img src={item.imgLink} alt={item.skinWeapon.skin.name} className="w-32 h-32 object-cover rounded-md mb-4" />
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-bold">{item.skinWeapon.skin.name}</span>
+                    <span className="text-blue-400">R${item.price.toFixed(2)}</span>
+                  </div>
+                  <p className="text-sm text-gray-400 mb-2">{item.skinWeapon.weapon.name} ({item.skinWeapon.weapon.weaponType.name})</p>
+                  <p className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</p>
+                  <p className="text-sm text-gray-400 mb-2">Wear: {item.wear.name}</p>
+                  <Button
+                    onClick={() => editSkinItem(item)}
+                    className="w-full bg-blue-600"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => deleteSkinItem(item.id)}
+                    className="w-full bg-red-600 mt-2"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
