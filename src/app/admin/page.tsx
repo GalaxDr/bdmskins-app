@@ -142,14 +142,27 @@ export default function AdminPage() {
     }
   };
 
-  const addOrUpdateSkinItem = async () => {
-    const { id, skinWeaponId, price, float, wearId, imgLink, inspectLink } = newSkinItem;
+  const fetchOrCreateSkinWeaponId = async (skinId: number, weaponId: number) => {
+    try {
+      const response = await fetch(`/api/skinweapon?skinId=${skinId}&weaponId=${weaponId}`);
+      const data = await response.json();
+      return data.id;
+    } catch (error) {
+      console.error("Erro ao buscar ou criar skinWeaponId:", error);
+      return null;
+    }
+  };
+  
 
-    if (!skinWeaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim() || wearId === null) {
+  const addOrUpdateSkinItem = async () => {
+    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink } = newSkinItem;
+  
+    if (!skinId || !weaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim() || wearId === null) {
       alert("Preencha todos os campos antes de adicionar o produto.");
       return;
     }
 
+    const skinWeaponId = await fetchOrCreateSkinWeaponId(skinId, weaponId);
     const endpoint = id ? `/api/skinitem/${id}` : '/api/skinitem';
     const method = id ? 'PUT' : 'POST';
 
@@ -165,7 +178,7 @@ export default function AdminPage() {
         inspectLink,
       }),
     });
-
+  
     setNewSkinItem({
       id: null,
       skinWeaponId: null,
