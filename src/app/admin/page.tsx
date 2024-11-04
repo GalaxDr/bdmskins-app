@@ -91,7 +91,7 @@ export default function AdminPage() {
   }, [isAuthenticated]);
 
   const handleLogin = () => {
-    if (username === '123' && password === '123') {
+    if (username === 'bondedosmaloka' && password === 'bdm123') {
       setIsAuthenticated(true);
     } else {
       alert('Credenciais inválidas');
