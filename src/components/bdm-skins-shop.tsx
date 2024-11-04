@@ -147,7 +147,7 @@ export function BdmSkinsShop() {
                     <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{item.wear}</span>
                   </div>
                   <Button
-                    onClick={() => handleBuyNowClick(item.name)}
+                    onClick={() => handleBuyNowClick(`${item.weapon} | ${item.name}`)}
                     className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
                   >
                     Buy Now
