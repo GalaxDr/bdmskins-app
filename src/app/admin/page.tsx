@@ -134,7 +134,9 @@ export default function AdminPage() {
     
     try {
       const response = await fetch(`/api/skinsByWeaponId?weaponId=${weaponId}`);
-      const data: Skin[] = await response.json();
+      let data: Skin[] = await response.json();
+      // Ordena as skins em ordem alfabética
+      data = data.sort((a, b) => a.name.localeCompare(b.name));
       setFilteredSkins(data);
     } catch (error) {
       console.error("Failed to fetch skins for weapon:", error);
