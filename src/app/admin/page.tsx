@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { env } from "process";
 
 interface Skin {
   id: number;
@@ -31,6 +32,7 @@ interface SkinItem {
   wearId: number;
   imgLink: string;
   inspectLink: string;
+  isStatTrak: boolean;
   skinWeaponId: number;
   skinWeapon: {
     skin: Skin;
@@ -58,6 +60,7 @@ export default function AdminPage() {
     wearId: null as number | null,
     imgLink: "",
     inspectLink: "",
+    isStatTrak: false,
   });
 
   function getWearIdFromFloat(floatValue: number): number {
@@ -91,9 +94,10 @@ export default function AdminPage() {
   }, [isAuthenticated]);
 
   const handleLogin = () => {
-    if (username === 'bondedosmaloka' && password === 'bdm123') {
+    if (username === process.env.NEXT_PUBLIC_USERNAME && password === process.env.NEXT_PUBLIC_PASSWORD) {
       setIsAuthenticated(true);
     } else {
+      console.log(process.env.USERNAME, process.env.PASSWORD);
       alert('Credenciais inválidas');
     }
   };
@@ -136,7 +140,6 @@ export default function AdminPage() {
     try {
       const response = await fetch(`/api/skinsByWeaponId?weaponId=${weaponId}`);
       let data: Skin[] = await response.json();
-      // Ordena as skins em ordem alfabética
       data = data.sort((a, b) => a.name.localeCompare(b.name));
       setFilteredSkins(data);
     } catch (error) {
@@ -157,7 +160,7 @@ export default function AdminPage() {
   
 
   const addOrUpdateSkinItem = async () => {
-    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink } = newSkinItem;
+    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink, isStatTrak} = newSkinItem;
   
     if (!skinId || !weaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim() || wearId === null) {
       alert("Preencha todos os campos antes de adicionar o produto.");
@@ -178,6 +181,7 @@ export default function AdminPage() {
         wearId,
         imgLink,
         inspectLink,
+        isStatTrak,
       }),
     });
   
@@ -191,6 +195,7 @@ export default function AdminPage() {
       wearId: null,
       imgLink: "",
       inspectLink: "",
+      isStatTrak: false,
     });
     setEditing(false);
     fetchSkinItems();
@@ -207,6 +212,7 @@ export default function AdminPage() {
       wearId: item.wearId,
       imgLink: item.imgLink,
       inspectLink: item.inspectLink,
+      isStatTrak: item.isStatTrak,
     });
     setEditing(true);
   };
@@ -228,6 +234,7 @@ export default function AdminPage() {
           <Input
             id="username"
             name="username"
+            type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -287,6 +294,15 @@ export default function AdminPage() {
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
+            <label className="text-white mb-4 my-4">
+              <input
+                type="checkbox"
+                checked={newSkinItem.isStatTrak}
+                onChange={(e) => setNewSkinItem((prev) => ({ ...prev, isStatTrak: e.target.checked }))}
+                className="mr-2 mb-4"
+              />
+              StatTrak
+            </label>
             <Input
               id="float"
               name="float"
@@ -331,6 +347,7 @@ export default function AdminPage() {
                     wearId: null,
                     imgLink: "",
                     inspectLink: "",
+                    isStatTrak: false,
                   });
                 }}
                 className="w-full mt-2 bg-red-600"
@@ -347,7 +364,7 @@ export default function AdminPage() {
                 <div key={item.id} className="bg-gray-900 p-4 rounded-lg shadow-lg">
                   <img src={item.imgLink} alt={item.skinWeapon.skin.name} className="w-32 h-32 object-cover rounded-md mb-2 mx-auto" />
                   <div className="flex justify-between mb-2">
-                    <span className="font-bold">{item.skinWeapon.skin.name}</span>
+                    <span className="font-bold">{item.skinWeapon.skin.name} {item.isStatTrak ? "(StatTrak™)" : ""}</span>
                     <span className="text-blue-400">R${item.price.toFixed(2)}</span>
                   </div>
                   <p className="text-sm text-gray-400 mb-2">{item.skinWeapon.weapon.name} ({item.skinWeapon.weapon.weaponType.name})</p>

@@ -31,10 +31,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const data = await request.json();
-  const { skinWeaponId, wearId, float, price, inspectLink, imgLink } = data;
+  const { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak } = data;
 
-  if (!skinWeaponId || !wearId || float == null || price == null || !inspectLink || !imgLink) {
-    console.error("Missing required fields:", { skinWeaponId, wearId, float, price, inspectLink, imgLink });
+  if (!skinWeaponId || !wearId || float == null || price == null || !inspectLink || !imgLink || isStatTrak == null) {
+    console.error("Missing required fields:", { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak });
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
@@ -47,6 +47,7 @@ export async function POST(request: Request) {
         price: parseFloat(price),
         inspectLink,
         imgLink,
+        isStatTrak,
       },
     });
     return NextResponse.json(newSkinItem);

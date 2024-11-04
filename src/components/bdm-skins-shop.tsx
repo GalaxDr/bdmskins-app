@@ -16,6 +16,7 @@ interface SkinItem {
   weaponType: string;
   image: string;
   inspectLink: string;
+  isStatTrak: boolean;
 }
 
 export function BdmSkinsShop() {
@@ -34,7 +35,7 @@ export function BdmSkinsShop() {
       const data = await response.json();
 
       // Mapeia os dados para o formato que o frontend espera
-      const mappedData = data.map((item: { id: number; skinWeapon: { skin: { name: string }; weapon: { name: string; weaponType: { name: string } } }; price: number; float: number; wear: { name: string }; imgLink: string; inspectLink: string }) => ({
+      const mappedData = data.map((item: { id: number; skinWeapon: { skin: { name: string }; weapon: { name: string; weaponType: { name: string } } }; price: number; float: number; wear: { name: string }; imgLink: string; inspectLink: string; isStatTrak: boolean }) => ({
         id: item.id,
         name: item.skinWeapon.skin.name,
         price: item.price,
@@ -44,6 +45,7 @@ export function BdmSkinsShop() {
         weaponType: item.skinWeapon.weapon.weaponType.name,
         image: item.imgLink,
         inspectLink: item.inspectLink,
+        isStatTrak: item.isStatTrak,
       }));
       
       setSkinItems(mappedData);
@@ -133,7 +135,9 @@ export function BdmSkinsShop() {
                 </div>
               </CardHeader>
               <CardContent className="p-4 pt-0 flex flex-col flex-grow">
-                <CardTitle className="text-md mb-2 text-gray-100">{item.weapon} | {item.name}</CardTitle>
+                <CardTitle className="text-md mb-2 text-gray-100">
+                  {item.weapon} {item.isStatTrak ? "(StatTrak™)" : ""} | {item.name}
+                </CardTitle>
                 <div className="flex flex-col space-y-2 flex-grow">
                   <div className="flex justify-between items-center">
                     <p className="text-xl font-bold text-blue-400">R${item.price.toFixed(2)}</p>

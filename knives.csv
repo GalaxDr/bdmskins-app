@@ -1,4 +1,39 @@
 WeaponType,Weapon,Skin
+Knife,Bayonet,Vanilla
+Knife,Bayonet,Gamma Doppler Phase 1
+Knife,Bayonet,Gamma Doppler Phase 2
+Knife,Bayonet,Gamma Doppler Phase 3
+Knife,Bayonet,Gamma Doppler Phase 4
+Knife,Bayonet,Gamma Doppler Emerald
+Knife,Bayonet,Lore
+Knife,Bayonet,Autotronic
+Knife,Bayonet,Black Laminate
+Knife,Bayonet,Freehand
+Knife,Bayonet,Bright Water
+Knife,Bayonet,Marble Fade
+Knife,Bayonet,Tiger Tooth
+Knife,Bayonet,Doppler Phase 1
+Knife,Bayonet,Doppler Phase 2
+Knife,Bayonet,Doppler Phase 3
+Knife,Bayonet,Doppler Phase 4
+Knife,Bayonet,Doppler Ruby
+Knife,Bayonet,Doppler Sapphire
+Knife,Bayonet,Doppler Black Pearl
+Knife,Bayonet,Damascus Steel
+Knife,Bayonet,Rust Coat
+Knife,Bayonet,Ultraviolet
+Knife,Bayonet,Slaughter
+Knife,Bayonet,Fade
+Knife,Bayonet,Case Hardened
+Knife,Bayonet,Night
+Knife,Bayonet,Crimson Web
+Knife,Bayonet,Stained
+Knife,Bayonet,Blue Steel
+Knife,Bayonet,Urban Masked
+Knife,Bayonet,Forest DDPAT
+Knife,Bayonet,Safari Mesh
+Knife,Bayonet,Boreal Forest
+Knife,Bayonet,Scorched
 Knife,Gut,Vanilla
 Knife,Gut,Autotronic
 Knife,Gut,Lore
@@ -339,3 +374,156 @@ Knife,Ursus,Forest DDPAT
 Knife,Ursus,Boreal Forest
 Knife,Ursus,Scorched
 Knife,Ursus,Safari Mesh
+Knife,Bowie,Vanilla
+Knife,Bowie,Autotronic
+Knife,Bowie,Gamma Doppler Phase 1
+Knife,Bowie,Gamma Doppler Phase 2
+Knife,Bowie,Gamma Doppler Phase 3
+Knife,Bowie,Gamma Doppler Phase 4
+Knife,Bowie,Gamma Doppler Emerald
+Knife,Bowie,Lore
+Knife,Bowie,Bright Water
+Knife,Bowie,Black Laminate
+Knife,Bowie,Freehand
+Knife,Bowie,Marble Fade
+Knife,Bowie,Tiger Tooth
+Knife,Bowie,Doppler Phase 1
+Knife,Bowie,Doppler Phase 2
+Knife,Bowie,Doppler Phase 3
+Knife,Bowie,Doppler Phase 4
+Knife,Bowie,Doppler Ruby
+Knife,Bowie,Doppler Sapphire
+Knife,Bowie,Doppler Black Pearl
+Knife,Bowie,Ultraviolet
+Knife,Bowie,Damascus Steel
+Knife,Bowie,Rust Coat
+Knife,Bowie,Fade
+Knife,Bowie,Night
+Knife,Bowie,Slaughter
+Knife,Bowie,Crimson Web
+Knife,Bowie,Case Hardened
+Knife,Bowie,Stained
+Knife,Bowie,Boreal Forest
+Knife,Bowie,Blue Steel
+Knife,Bowie,Forest DDPAT
+Knife,Bowie,Scorched
+Knife,Bowie,Urban Masked
+Knife,Bowie,Safari Mesh
+Knife,Butterfly,Vanilla
+Knife,Butterfly,Gamma Doppler Phase 1
+Knife,Butterfly,Gamma Doppler Phase 2
+Knife,Butterfly,Gamma Doppler Phase 3
+Knife,Butterfly,Gamma Doppler Phase 4
+Knife,Butterfly,Gamma Doppler Emerald
+Knife,Butterfly,Autotronic
+Knife,Butterfly,Black Laminate
+Knife,Butterfly,Bright Water
+Knife,Butterfly,Freehand
+Knife,Butterfly,Lore
+Knife,Butterfly,Marble Fade
+Knife,Butterfly,Tiger Tooth
+Knife,Butterfly,Doppler Phase 1
+Knife,Butterfly,Doppler Phase 2
+Knife,Butterfly,Doppler Phase 3
+Knife,Butterfly,Doppler Phase 4
+Knife,Butterfly,Doppler Ruby
+Knife,Butterfly,Doppler Sapphire
+Knife,Butterfly,Doppler Black Pearl
+Knife,Butterfly,Damascus Steel
+Knife,Butterfly,Rust Coat
+Knife,Butterfly,Ultraviolet
+Knife,Butterfly,Slaughter
+Knife,Butterfly,Crimson Web
+Knife,Butterfly,Blue Steel
+Knife,Butterfly,Case Hardened
+Knife,Butterfly,Night
+Knife,Butterfly,Stained
+Knife,Butterfly,Forest DDPAT
+Knife,Butterfly,Boreal Forest
+Knife,Butterfly,Urban Masked
+Knife,Butterfly,Safari Mesh
+Knife,Butterfly,Scorched
+Knife,Butterfly,Fade
+Knife,Classic,Vanilla
+Knife,Classic,Fade
+Knife,Classic,Crimson Web
+Knife,Classic,Forest DDPAT
+Knife,Classic,Safari Mesh
+Knife,Classic,Slaughter
+Knife,Classic,Night Stripe
+Knife,Classic,Case Hardened
+Knife,Classic,Blue Steel
+Knife,Classic,Boreal Forest
+Knife,Classic,Urban Masked
+Knife,Classic,Stained
+Knife,Classic,Scorched
+Knife,Falchion,Vanilla
+Knife,Falchion,Gamma Doppler Phase 1
+Knife,Falchion,Gamma Doppler Phase 2
+Knife,Falchion,Gamma Doppler Phase 3
+Knife,Falchion,Gamma Doppler Phase 4
+Knife,Falchion,Gamma Doppler Emerald
+Knife,Falchion,Lore
+Knife,Falchion,Autotronic
+Knife,Falchion,Bright Water
+Knife,Falchion,Freehand
+Knife,Falchion,Black Laminate
+Knife,Falchion,Doppler Phase 1
+Knife,Falchion,Doppler Phase 2
+Knife,Falchion,Doppler Phase 3
+Knife,Falchion,Doppler Phase 4
+Knife,Falchion,Doppler Ruby
+Knife,Falchion,Doppler Sapphire
+Knife,Falchion,Doppler Black Pearl
+Knife,Falchion,Marble Fade
+Knife,Falchion,Tiger Tooth
+Knife,Falchion,Ultraviolet
+Knife,Falchion,Damascus Steel
+Knife,Falchion,Rust Coat
+Knife,Falchion,Safari Mesh
+Knife,Falchion,Crimson Web
+Knife,Falchion,Fade
+Knife,Falchion,Case Hardened
+Knife,Falchion,Boreal Forest
+Knife,Falchion,Slaughter
+Knife,Falchion,Night
+Knife,Falchion,Urban Masked
+Knife,Falchion,Blue Steel
+Knife,Falchion,Stained
+Knife,Falchion,Scorched
+Knife,Falchion,Forest DDPAT
+Knife,Flip,Vanilla
+Knife,Flip,Lore
+Knife,Flip,Gamma Doppler Phase 1
+Knife,Flip,Gamma Doppler Phase 2
+Knife,Flip,Gamma Doppler Phase 3
+Knife,Flip,Gamma Doppler Phase 4
+Knife,Flip,Gamma Doppler Emerald
+Knife,Flip,Autotronic
+Knife,Flip,Freehand
+Knife,Flip,Bright Water
+Knife,Flip,Black Laminate
+Knife,Flip,Marble Fade
+Knife,Flip,Tiger Tooth
+Knife,Flip,Doppler Phase 1
+Knife,Flip,Doppler Phase 2
+Knife,Flip,Doppler Phase 3
+Knife,Flip,Doppler Phase 4
+Knife,Flip,Doppler Ruby
+Knife,Flip,Doppler Sapphire
+Knife,Flip,Doppler Black Pearl
+Knife,Flip,Ultraviolet
+Knife,Flip,Damascus Steel
+Knife,Flip,Rust Coat
+Knife,Flip,Crimson Web
+Knife,Flip,Fade
+Knife,Flip,Slaughter
+Knife,Flip,Case Hardened
+Knife,Flip,Blue Steel
+Knife,Flip,Urban Masked
+Knife,Flip,Stained
+Knife,Flip,Night
+Knife,Flip,Forest DDPAT
+Knife,Flip,Safari Mesh
+Knife,Flip,Scorched
+Knife,Flip,Boreal Forest
