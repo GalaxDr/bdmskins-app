@@ -1,11 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-// prisma/schema.prisma
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -15,11 +7,51 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Wear {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  SkinItem SkinItem[]
+}
+
+model WeaponType {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  weapons  Weapon[]
+}
+
+model Weapon {
+  id            Int         @id @default(autoincrement())
+  name          String      @unique
+  weaponTypeId  Int
+  weaponType    WeaponType  @relation(fields: [weaponTypeId], references: [id])
+  skinWeapons   SkinWeapon[]
+}
+
 model Skin {
-  id      Int    @id @default(autoincrement())
-  name    String
-  price   Float
-  float   Float
-  wear    String
-  image   String
+  id           Int          @id @default(autoincrement())
+  name         String       @unique
+  skinWeapons  SkinWeapon[]
+}
+
+model SkinWeapon {
+  id       Int        @id @default(autoincrement())
+  skinId   Int
+  weaponId Int
+  skin     Skin       @relation(fields: [skinId], references: [id])
+  weapon   Weapon     @relation(fields: [weaponId], references: [id])
+  SkinItem SkinItem[]
+
+  @@unique([skinId, weaponId])
+}
+
+model SkinItem {
+  id           Int        @id @default(autoincrement())
+  skinWeaponId Int
+  wearId       Int
+  float        Float
+  price        Float
+  inspectLink  String
+  imgLink      String
+  skinWeapon   SkinWeapon @relation(fields: [skinWeaponId], references: [id])
+  wear         Wear       @relation(fields: [wearId], references: [id])
 }

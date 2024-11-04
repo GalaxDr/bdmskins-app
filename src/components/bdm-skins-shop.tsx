@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -6,35 +6,61 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
-interface Skin {
+interface SkinItem {
   id: number;
   name: string;
   price: number;
   float: number;
   wear: string;
+  weapon: string;
+  weaponType: string;
   image: string;
+  inspectLink: string;
 }
 
 export function BdmSkinsShop() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<"price-asc" | "price-desc" | "float-asc" | "float-desc">("price-asc");
-  const [skins, setSkins] = useState<Skin[]>([]);
+  const [skinItems, setSkinItems] = useState<SkinItem[]>([]);
 
-  // Função para buscar skins da API
-  const fetchSkins = async () => {
-    const response = await fetch('/api/skins');
-    const data: Skin[] = await response.json();
-    setSkins(data);
+  // Função para buscar os dados de `skinItem` da API
+  const fetchSkinItems = async () => {
+    try {
+      const response = await fetch('/api/skinitem');
+      if (!response.ok) {
+        console.error(`Erro na resposta da API: ${response.status}`);
+        return;
+      }
+      const data = await response.json();
+
+      // Mapeia os dados para o formato que o frontend espera
+      const mappedData = data.map((item: { id: number; skinWeapon: { skin: { name: string }; weapon: { name: string; weaponType: { name: string } } }; price: number; float: number; wear: { name: string }; imgLink: string; inspectLink: string }) => ({
+        id: item.id,
+        name: item.skinWeapon.skin.name,
+        price: item.price,
+        float: item.float,
+        wear: item.wear.name,
+        weapon: item.skinWeapon.weapon.name,
+        weaponType: item.skinWeapon.weapon.weaponType.name,
+        image: item.imgLink,
+        inspectLink: item.inspectLink,
+      }));
+      
+      setSkinItems(mappedData);
+    } catch (error) {
+      console.error("Erro ao buscar os dados da API:", error);
+    }
   };
 
   useEffect(() => {
-    fetchSkins();
+    fetchSkinItems();
   }, []);
 
-  // Filtra e ordena as skins com base na pesquisa e na opção de ordenação
-  const filteredSkins = skins
-    .filter((skin) =>
-      skin.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filtra e ordena os itens de `skinItem` com base na pesquisa e na opção de ordenação
+  const filteredSkins = skinItems
+    .filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.weapon.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
       if (sortOption === "price-asc") {
@@ -92,35 +118,41 @@ export function BdmSkinsShop() {
         
         {/* Skins Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredSkins.map((skin) => (
+          {filteredSkins.map((item) => (
             <Card 
-              key={skin.id} 
+              key={item.id} 
               className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
             >
               <CardHeader className="p-4">
                 <div className="aspect-square relative bg-gray-900 rounded-lg overflow-hidden">
                   <img
-                    src={skin.image}
-                    alt={skin.name}
+                    src={item.image}
+                    alt={item.name}
                     className="object-contain w-3/4 h-3/4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-300"
                   />
                 </div>
               </CardHeader>
               <CardContent className="p-4 pt-0 flex flex-col flex-grow">
-                <CardTitle className="text-md mb-2 text-gray-100">{skin.name}</CardTitle>
+                <CardTitle className="text-md mb-2 text-gray-100">{item.weapon} | {item.name}</CardTitle>
                 <div className="flex flex-col space-y-2 flex-grow">
                   <div className="flex justify-between items-center">
-                    <p className="text-xl font-bold text-blue-400">R${skin.price.toFixed(2)}</p>
-                    <span className="text-sm text-gray-400">Float: {skin.float.toFixed(8)}</span>
+                    <p className="text-xl font-bold text-blue-400">R${item.price.toFixed(2)}</p>
+                    <span className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{skin.wear}</span>
+                    <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{item.wear}</span>
                   </div>
                   <Button
-                    onClick={() => handleBuyNowClick(skin.name)}
+                    onClick={() => handleBuyNowClick(item.name)}
                     className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
                   >
                     Buy Now
+                  </Button>
+                  <Button
+                    onClick={() => window.open(item.inspectLink, "_blank")}
+                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600"
+                  >
+                    Inspect
                   </Button>
                 </div>
               </CardContent>
