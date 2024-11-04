@@ -107,6 +107,7 @@ export default function AdminPage() {
   const fetchWeapons = async () => {
     const response = await fetch('/api/weapons');
     const data: Weapon[] = await response.json();
+    data.sort((a, b) => a.name.localeCompare(b.name));
     setWeapons(data);
   };
 
