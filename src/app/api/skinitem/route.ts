@@ -50,8 +50,13 @@ export async function POST(request: Request) {
       },
     });
     return NextResponse.json(newSkinItem);
-  } catch (error: any) {
-    console.error("Error creating item:", error.message || error);
-    return NextResponse.json({ error: "Failed to create item", details: error.message || error }, { status: 500 });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error creating item:", error.message);
+      return NextResponse.json({ error: "Failed to create item", details: error.message }, { status: 500 });
+    } else {
+      console.error("Unexpected error:", error);
+      return NextResponse.json({ error: "Failed to create item", details: "Unexpected error" }, { status: 500 });
+    }
   }
 }

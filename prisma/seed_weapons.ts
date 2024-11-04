@@ -4,7 +4,6 @@ import csvParser from 'csv-parser';
 
 const prisma = new PrismaClient();
 
-// Definição dos tipos de arma
 const weaponTypes = {
   Rifle: ["AK-47", "M4A1-S", "AUG", "FAMAS", "SSG 08", "G3SG1", "AWP", "M4A4", "SG 553", "Galil AR", "SCAR-20"],
   Pistol: ["Desert Eagle", "Glock-18", "P250", "R8 Revolver", "Dual Berettas", "Zeus x27", "USP-S", "P2000", "Five-SeveN", "Tec-9", "CZ75-Auto"],
@@ -13,7 +12,6 @@ const weaponTypes = {
   Machinegun: ["M249", "Negev"],
 };
 
-// Função para determinar o tipo de arma
 function getWeaponType(weaponName: string): string | null {
   for (const [type, weapons] of Object.entries(weaponTypes)) {
     if (weapons.includes(weaponName)) return type;
@@ -22,7 +20,7 @@ function getWeaponType(weaponName: string): string | null {
 }
 
 async function seedFromCSV() {
-  // Criar ou buscar WeaponTypes no banco
+  // Prepara os registros de WeaponType no cache
   const weaponTypeRecords: { [key: string]: any } = {};
   for (const type of Object.keys(weaponTypes)) {
     weaponTypeRecords[type] = await prisma.weaponType.upsert({
@@ -32,12 +30,26 @@ async function seedFromCSV() {
     });
   }
 
-  // Ler o CSV e processar cada linha
+  const weaponsCache = new Map<string, any>();
+  const skinsCache = new Map<string, any>();
+
+  // Pré-carrega todas as armas e skins existentes no cache
+  const [allWeapons, allSkins] = await Promise.all([
+    prisma.weapon.findMany(),
+    prisma.skin.findMany(),
+  ]);
+
+  allWeapons.forEach(weapon => weaponsCache.set(weapon.name, weapon));
+  allSkins.forEach(skin => skinsCache.set(skin.name, skin));
+
+  // Ler o CSV e processar cada linha em lotes
   const results: { Weapon: string; Skin: string }[] = [];
   createReadStream('weapons_skins.csv')
     .pipe(csvParser())
     .on('data', (data) => results.push(data))
     .on('end', async () => {
+      const skinWeaponsToCreate = [];
+      
       for (const { Weapon, Skin } of results) {
         const weaponTypeName = getWeaponType(Weapon);
         if (!weaponTypeName) {
@@ -45,38 +57,39 @@ async function seedFromCSV() {
           continue;
         }
 
-        // Busca ou cria a arma com o tipo correto
-        const weapon = await prisma.weapon.upsert({
-            where: { name: Weapon }, // Agora pode usar `name` como chave única
-            update: {},
-            create: {
+        let weapon = weaponsCache.get(Weapon);
+        if (!weapon) {
+          // Cria arma caso não exista no cache
+          weapon = await prisma.weapon.create({
+            data: {
               name: Weapon,
               weaponTypeId: weaponTypeRecords[weaponTypeName].id,
             },
           });
+          weaponsCache.set(Weapon, weapon);
+        }
 
-        // Busca ou cria a skin
-        const skin = await prisma.skin.upsert({
-          where: { name: Skin },
-          update: {},
-          create: { name: Skin },
-        });
+        let skin = skinsCache.get(Skin);
+        if (!skin) {
+          // Cria skin caso não exista no cache
+          skin = await prisma.skin.create({
+            data: { name: Skin },
+          });
+          skinsCache.set(Skin, skin);
+        }
 
-        // Cria a relação entre arma e skin em SkinWeapon
-        await prisma.skinWeapon.upsert({
-          where: {
-            skinId_weaponId: {
-              skinId: skin.id,
-              weaponId: weapon.id,
-            },
-          },
-          update: {},
-          create: {
-            skinId: skin.id,
-            weaponId: weapon.id,
-          },
+        // Adiciona o relacionamento a ser criado
+        skinWeaponsToCreate.push({
+          skinId: skin.id,
+          weaponId: weapon.id,
         });
       }
+
+      // Insere todos os relacionamentos SkinWeapon em lote
+      await prisma.skinWeapon.createMany({
+        data: skinWeaponsToCreate,
+        skipDuplicates: true, // Ignora duplicatas
+      });
 
       console.log("Database seeding completed from CSV.");
       await prisma.$disconnect();

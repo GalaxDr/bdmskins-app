@@ -50,25 +50,30 @@ export async function POST(request: Request) {
       },
     });
     return NextResponse.json(newSkinItem);
-  } catch (error: any) {
-    console.error("Error creating item:", error.message || error);
-    return NextResponse.json({ error: "Failed to create item", details: error.message || error }, { status: 500 });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error creating item:", error.message);
+      return NextResponse.json({ error: "Failed to create item", details: error.message }, { status: 500 });
+    } else {
+      console.error("Error creating item:", error);
+      return NextResponse.json({ error: "Failed to create item", details: String(error) }, { status: 500 });
+    }
   }
 }
 
-// Modifica a função PUT para utilizar a rota dinâmica
-export async function PUT(request: Request, context: Promise<{ params: { id: string } }>) {
-  const { params } = await context;
-  const id = parseInt(params.id, 10);
+export async function PUT(request: Request) {
+  const url = new URL(request.url);
+  const id = url.pathname.split('/').pop();
+  const parsedId = id ? parseInt(id, 10) : null;
   const data = await request.json();
 
-  if (!id) {
+  if (!parsedId) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 });
   }
 
   try {
     const updatedSkinItem = await prisma.skinItem.update({
-      where: { id },
+      where: { id: parsedId },
       data: {
         skinWeapon: data.skinWeaponId ? { connect: { id: data.skinWeaponId } } : undefined,
         wear: data.wearId ? { connect: { id: data.wearId } } : undefined,
@@ -85,21 +90,22 @@ export async function PUT(request: Request, context: Promise<{ params: { id: str
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-    const id = parseInt(params.id, 10);
-  
-    if (!id) {
-      return NextResponse.json({ error: "ID is required" }, { status: 400 });
-    }
-  
-    try {
-      await prisma.skinItem.delete({
-        where: { id },
-      });
-      return NextResponse.json({ message: 'Skin item deleted' });
-    } catch (error) {
-      console.error("DELETE request failed:", error);
-      return NextResponse.json({ error: "Delete failed" }, { status: 500 });
-    }
+export async function DELETE(request: Request) {
+  const url = new URL(request.url);
+  const id = url.pathname.split('/').pop();
+  const parsedId = id ? parseInt(id, 10) : null;
+
+  if (!parsedId) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
   }
-  
+
+  try {
+    await prisma.skinItem.delete({
+      where: { id: parsedId },
+    });
+    return NextResponse.json({ message: 'Skin item deleted' });
+  } catch (error) {
+    console.error("DELETE request failed:", error);
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+  }
+}

@@ -34,7 +34,7 @@ export function BdmSkinsShop() {
       const data = await response.json();
 
       // Mapeia os dados para o formato que o frontend espera
-      const mappedData = data.map((item: any) => ({
+      const mappedData = data.map((item: { id: number; skinWeapon: { skin: { name: string }; weapon: { name: string; weaponType: { name: string } } }; price: number; float: number; wear: { name: string }; imgLink: string; inspectLink: string }) => ({
         id: item.id,
         name: item.skinWeapon.skin.name,
         price: item.price,

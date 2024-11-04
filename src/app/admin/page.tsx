@@ -44,8 +44,7 @@ export default function AdminPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [filteredSkins, setFilteredSkins] = useState<Skin[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [wears, setWears] = useState<Wear[]>([]);
+  const setWears = useState<Wear[]>([])[1];
   const [weapons, setWeapons] = useState<Weapon[]>([]);
   const [skinItems, setSkinItems] = useState<SkinItem[]>([]);
 
