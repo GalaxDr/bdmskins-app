@@ -52,6 +52,7 @@ model SkinItem {
   price        Float
   inspectLink  String
   imgLink      String
+  isStatTrak   Boolean     @default(false)
   skinWeapon   SkinWeapon @relation(fields: [skinWeaponId], references: [id])
   wear         Wear       @relation(fields: [wearId], references: [id])
 }

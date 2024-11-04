@@ -31,10 +31,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const data = await request.json();
-  const { skinWeaponId, wearId, float, price, inspectLink, imgLink } = data;
+  const { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak } = data;
 
-  if (!skinWeaponId || !wearId || float == null || price == null || !inspectLink || !imgLink) {
-    console.error("Missing required fields:", { skinWeaponId, wearId, float, price, inspectLink, imgLink });
+  if (!skinWeaponId || !wearId || float == null || price == null || !inspectLink || !imgLink || isStatTrak == null) {
+    console.error("Missing required fields:", { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak });
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
@@ -47,6 +47,7 @@ export async function POST(request: Request) {
         price: parseFloat(price),
         inspectLink,
         imgLink,
+        isStatTrak,
       },
     });
     return NextResponse.json(newSkinItem);
@@ -55,8 +56,8 @@ export async function POST(request: Request) {
       console.error("Error creating item:", error.message);
       return NextResponse.json({ error: "Failed to create item", details: error.message }, { status: 500 });
     } else {
-      console.error("Error creating item:", error);
-      return NextResponse.json({ error: "Failed to create item", details: String(error) }, { status: 500 });
+      console.error("Unexpected error:", error);
+      return NextResponse.json({ error: "Failed to create item", details: "Unexpected error" }, { status: 500 });
     }
   }
 }
@@ -81,6 +82,7 @@ export async function PUT(request: Request) {
         price: data.price !== undefined ? parseFloat(data.price) : undefined,
         inspectLink: data.inspectLink || undefined,
         imgLink: data.imgLink || undefined,
+        isStatTrak: data.isStatTrak !== undefined ? data.isStatTrak : undefined,
       },
     });
     return NextResponse.json(updatedSkinItem);
