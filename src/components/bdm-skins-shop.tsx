@@ -140,11 +140,16 @@ export function BdmSkinsShop() {
                 </CardTitle>
                 <div className="flex flex-col space-y-2 flex-grow">
                   <div className="flex justify-between items-center">
-                    <p className="text-xl font-bold text-blue-400">R${item.price.toFixed(2)}</p>
-                    <span className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</span>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-2xl font-bold text-blue-400">R${item.price.toFixed(2)}</p>
+                      <p className="text-xl font-bold text-red-500 line-through">R${(item.price * 1.3).toFixed(2)}</p>
+                    </div>
+                    
                   </div>
+                  
                   <div className="flex justify-between items-center">
                     <span className="px-2 py-1 bg-gray-700 rounded-full text-xs">{item.wear}</span>
+                    <span className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</span>
                   </div>
                   <Button
                     onClick={() => handleBuyNowClick(`${item.weapon} | ${item.name}`)}
