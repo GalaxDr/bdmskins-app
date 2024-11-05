@@ -166,7 +166,7 @@ export function BdmSkinsShop() {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
                       <p className="text-2xl font-bold text-blue-400">R${item.price.toFixed(2)}</p>
-                      <p className="text-xl font-bold text-red-500 line-through">R${(item.price * 1.3).toFixed(2)}</p>
+                      <p className="text-xl font-bold text-red-500 line-through">R${(item.price * 1.35).toFixed(2)}</p>
                     </div>
                     
                   </div>
