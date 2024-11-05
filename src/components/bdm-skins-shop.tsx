@@ -17,6 +17,8 @@ interface SkinItem {
   image: string;
   inspectLink: string;
   isStatTrak: boolean;
+  hasStickers: boolean;
+  hasLowFloat: boolean;
 }
 
 export function BdmSkinsShop() {
@@ -35,7 +37,16 @@ export function BdmSkinsShop() {
       const data = await response.json();
 
       // Mapeia os dados para o formato que o frontend espera
-      const mappedData = data.map((item: { id: number; skinWeapon: { skin: { name: string }; weapon: { name: string; weaponType: { name: string } } }; price: number; float: number; wear: { name: string }; imgLink: string; inspectLink: string; isStatTrak: boolean }) => ({
+      const mappedData = data.map((item: { id: number;
+         skinWeapon: { skin: { name: string };
+          weapon: { name: string; weaponType: { name: string } } };
+           price: number;
+            float: number;
+             wear: { name: string };
+              imgLink: string; inspectLink: string;
+               isStatTrak: boolean;
+                hasStickers: boolean;
+                 hasLowFloat: boolean; }) => ({
         id: item.id,
         name: item.skinWeapon.skin.name,
         price: item.price,
@@ -46,6 +57,8 @@ export function BdmSkinsShop() {
         image: item.imgLink,
         inspectLink: item.inspectLink,
         isStatTrak: item.isStatTrak,
+        hasStickers: item.hasStickers,
+        hasLowFloat: item.hasLowFloat,
       }));
       
       setSkinItems(mappedData);
@@ -132,6 +145,17 @@ export function BdmSkinsShop() {
                     alt={item.name}
                     className="object-contain w-3/4 h-3/4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-300"
                   />
+                  {item.hasLowFloat && (
+                  <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                    Good Float
+                  </div>
+                )}
+                {/* Adesivo para stickers */}
+                {item.hasStickers && (
+                  <div className="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">
+                    Stickers
+                  </div>
+                )}
                 </div>
               </CardHeader>
               <CardContent className="p-4 pt-0 flex flex-col flex-grow">

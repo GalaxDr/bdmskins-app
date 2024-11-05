@@ -76,9 +76,9 @@ Nova,Caged Steel
 MAC-10,Silver
 Glock-18,Death Rattle
 G3SG1,Green Apple
-Galil AR,Tuedo
+Galil AR,Tuxedo
 Desert Eagle,Meteorite
-CZ75-Auto,Tuedo
+CZ75-Auto,Tuxedo
 AK-47,Emerald Pinstripe
 P250,Franklin
 MP5-SD,Lab Rats
@@ -92,8 +92,8 @@ Glock-18,Reactor
 MP9,Setting Sun
 XM1014,Bone Machine
 MAC-10,Nuclear Garden
-Tec-9,Toic
-FAMAS,Sty
+Tec-9,Toxic
+FAMAS,Styx
 Galil AR,Cerberus
 CZ75-Auto,Indigo
 AUG,Navy Murano
@@ -341,7 +341,7 @@ MP7,Motherboard
 Negev,Bulkhead
 Galil AR,Cold Fusion
 M4A4,Mainframe
-P250,Echanger
+P250,Exchanger
 P90,Facility Negative
 MP5-SD,Co-Processor
 AWP,Acheron
@@ -378,14 +378,14 @@ FAMAS,CaliCamo
 CZ75-Auto,Midnight Palm
 P90,Verdant Growth
 USP-S,Purple DDPAT
-MP9,Music Bo
+MP9,Music Box
 M249,Humidor
 SG 553,Desert Blossom
 XM1014,Elegant Vines
 Glock-18,Pink DDPAT
 AUG,Sand Storm
-MP5-SD,Oide Oasis
-Desert Eagle,Fennec Fo
+MP5-SD,Oxide Oasis
+Desert Eagle,Fennec Fox
 AWP,Desert Hydra
 Desert Eagle,Sputnik
 M4A1-S,Fizzy POP
@@ -437,7 +437,7 @@ Five-SeveN,Nitro
 CZ75-Auto,Emerald
 SG 553,Bulldozer
 Dual Berettas,Duelist
-Glock-18,Twilight Galay
+Glock-18,Twilight Galaxy
 M4A1-S,Hot Rod
 MP7,Asterion
 AUG,Daedalus
@@ -448,7 +448,7 @@ P2000,Pathfinder
 AWP,Sun in Leo
 M249,Shipping Forecast
 UMP-45,Minotaur's Labyrinth
-MP9,Pandora's Bo
+MP9,Pandora's Box
 G3SG1,Chronos
 M4A1-S,Icarus Fell
 M4A4,Poseidon
@@ -526,17 +526,17 @@ PP-Bizon,Death Rattle
 Dual Berettas,Heist
 Sawed-Off,Clay Ambush
 M249,Predator
-Tec-9,Phoeni Chalk
+Tec-9,Phoenix Chalk
 MP7,Vault Heist
-R8 Revolver,Phoeni Marker
+R8 Revolver,Phoenix Marker
 UMP-45,Houndstooth
 Nova,Rust Coat
 P90,Tiger Pit
-Negev,Phoeni Stencil
+Negev,Phoenix Stencil
 Desert Eagle,Night Heist
 P250,Bengal Tiger
 Glock-18,Franklin
-Galil AR,Phoeni Blacklight
+Galil AR,Phoenix Blacklight
 SG 553,Hypnotic
 MAC-10,Hot Snakes
 AWP,Silk Tiger
@@ -571,7 +571,7 @@ Five-SeveN,Heat Treated
 UMP-45,Crimson Foil
 MP9,Arctic Tri-Tone
 Galil AR,Rainbow Spoon
-Glock-18,AIA
+Glock-18,AXIA
 M4A1-S,Fade
 MP7,Skulls
 SG 553,Ultraviolet
@@ -608,7 +608,7 @@ Desert Eagle,Golden Koi
 AK-47,Fire Serpent
 Tec-9,Blue Titanium
 M4A1-S,Blood Tiger
-FAMAS,Heane
+FAMAS,Hexane
 P250,Hive
 SCAR-20,Crimson Web
 Five-SeveN,Case Hardened
@@ -651,7 +651,7 @@ Glock-18,Blue Fissure
 CZ75-Auto,Tread Plate
 Tec-9,Titanium Bit
 Desert Eagle,Heirloom
-Five-SeveN,Copper Galay
+Five-SeveN,Copper Galaxy
 CZ75-Auto,The Fuschia Is Now
 P250,Undertow
 CZ75-Auto,Victoria
@@ -683,7 +683,7 @@ XM1014,Heaven Guard
 MAC-10,Curse
 MAC-10,Tatter
 M4A1-S,Atomic Alloy
-SCAR-20,Cyre
+SCAR-20,Cyrex
 USP-S,Orion
 USP-S,Caiman
 AK-47,Vulcan
@@ -702,7 +702,7 @@ Desert Eagle,Conspiracy
 Five-SeveN,Fowl Play
 Glock-18,Water Elemental
 P90,Asiimov
-M4A1-S,Cyre
+M4A1-S,Cyrex
 SSG 08,Dark Water
 MAC-10,Ultraviolet
 USP-S,Blood Tiger
@@ -747,7 +747,7 @@ AK-47,Cartel
 M4A4,龍王 (Dragon King)
 P250,Muertos
 AWP,Man-o'-war
-Galil AR,Chatterbo
+Galil AR,Chatterbox
 AK-47,Elite Build
 MP7,Armor Core
 Desert Eagle,Bronze Deco
@@ -757,7 +757,7 @@ Sawed-Off,Origami
 AWP,Worm God
 MAG-7,Heat
 CZ75-Auto,Pole Position
-UMP-45,Grand Pri
+UMP-45,Grand Prix
 Five-SeveN,Monkey Business
 Galil AR,Eco
 FAMAS,Djinn
@@ -776,7 +776,7 @@ Negev,Loudmouth
 P2000,Handgun
 CZ75-Auto,Yellow Jacket
 MP7,Nemesis
-SG 553,Cyre
+SG 553,Cyrex
 AK-47,Aquamarine Revenge
 AWP,Hyper Beast
 Dual Berettas,Dualing Dragons
@@ -791,7 +791,7 @@ M249,Nebula Crusader
 MP7,Special Delivery
 P250,Wingshot
 AK-47,Frontside Misty
-G3SG1,Flu
+G3SG1,Flux
 SSG 08,Big Iron
 M4A1-S,Golden Coil
 USP-S,Kill Confirmed
@@ -808,7 +808,7 @@ SG 553,Tiger Moth
 Tec-9,Avalanche
 XM1014,Teclu Burner
 AK-47,Point Disarray
-G3SG1,The Eecutioner
+G3SG1,The Executioner
 P90,Shapewood
 M4A4,Royal Paladin
 R8 Revolver,Fade
@@ -886,7 +886,7 @@ Galil AR,Black Sand
 MP7,Cirrus
 Glock-18,Ironwork
 CZ75-Auto,Polymer
-USP-S,Cyre
+USP-S,Cyrex
 Nova,Gila
 M4A1-S,Flashback
 G3SG1,Stinger
@@ -898,7 +898,7 @@ M4A4,Buzz Kill
 SSG 08,Dragonfire
 PP-Bizon,Jungle Slipstream
 SCAR-20,Blueprint
-Desert Eagle,Oide Blaze
+Desert Eagle,Oxide Blaze
 Five-SeveN,Capillary
 MP7,Akoben
 P250,Ripple
@@ -909,7 +909,7 @@ MAC-10,Last Dive
 UMP-45,Scaffold
 XM1014,Seasons
 AWP,Fever Dream
-CZ75-Auto,iangliu
+CZ75-Auto,Xiangliu
 M4A1-S,Decimator
 AK-47,Bloodsport
 USP-S,Neo-Noir
@@ -941,7 +941,7 @@ Glock-18,Off World
 MP9,Goo
 SG 553,Phantom
 XM1014,Ziggy
-UMP-45,Eposure
+UMP-45,Exposure
 CZ75-Auto,Tacticat
 PP-Bizon,High Roller
 R8 Revolver,Llama Cannon
@@ -950,17 +950,17 @@ AK-47,The Empress
 P250,See Ya Later
 SG 553,Aloha
 MP9,Black Sand
-XM1014,Oide Blaze
+XM1014,Oxide Blaze
 P2000,Urban Hazard
 R8 Revolver,Grip
 Five-SeveN,Flame Test
 PP-Bizon,Night Riot
-Nova,Wild Si
+Nova,Wild Six
 Negev,Lionfish
 MAG-7,SWAG-7
 UMP-45,Arctic Wolf
 Glock-18,Moonrise
-USP-S,Corte
+USP-S,Cortex
 AUG,Stymphalian
 AWP,Mortis
 MP7,Bloodsport
@@ -1076,7 +1076,7 @@ PP-Bizon,Runic
 SSG 08,Mainframe 001
 MAG-7,Monster Call
 Tec-9,Brother
-Galil AR,Conneion
+Galil AR,Connexion
 MP5-SD,Kitbash
 MAC-10,Allure
 XM1014,Entombed
@@ -1094,8 +1094,8 @@ MP5-SD,Condition Zero
 UMP-45,Gold Bismuth
 Dual Berettas,Dezastre
 Nova,Clear Polymer
-SSG 08,Paralla
-AWP,Eoskeleton
+SSG 08,Parallax
+AWP,Exoskeleton
 Five-SeveN,Fairy Tale
 USP-S,Monster Mashup
 M4A4,Cyber Security
@@ -1108,7 +1108,7 @@ CZ75-Auto,Circaetus
 R8 Revolver,Junk Yard
 SG 553,Heavy Metal
 Glock-18,Clear Polymer
-Negev,dev_teture
+Negev,dev_texture
 MAC-10,Button Masher
 P250,Cyber Shell
 Desert Eagle,Trigger Discipline
@@ -1126,11 +1126,11 @@ PP-Bizon,Lumen
 USP-S,Black Lotus
 XM1014,Watchdog
 MAG-7,BI83 Spectrum
-FAMAS,Z Spectron
+FAMAS,ZX Spectron
 Five-SeveN,Boost Protocol
 MP9,Mount Fuji
 M4A4,Spider Lily
-MAC-10,Toybo
+MAC-10,Toybox
 Glock-18,Snack Attack
 SSG 08,Turbo Peek
 AK-47,Leet Museo
@@ -1192,7 +1192,7 @@ UMP-45,Motorized
 XM1014,Irezumi
 Tec-9,Slag
 SSG 08,Dezastre
-MAC-10,Light Bo
+MAC-10,Light Box
 Sawed-Off,Analog Input
 MP7,Just Smile
 Five-SeveN,Hybrid
@@ -1205,7 +1205,7 @@ AWP,Chrome Cannon
 AK-47,Inheritance
 M249,Hypnosis
 MP5-SD,Statics
-AUG,Lue Trim
+AUG,Luxe Trim
 SCAR-20,Trail Blazer
 R8 Revolver,Tango
 USP-S,27

@@ -52,7 +52,9 @@ model SkinItem {
   price        Float
   inspectLink  String
   imgLink      String
-  isStatTrak   Boolean     @default(false)
+  isStatTrak   Boolean    @default(false)
+  hasStickers  Boolean    @default(false)
+  hasLowFloat  Boolean    @default(false) 
   skinWeapon   SkinWeapon @relation(fields: [skinWeaponId], references: [id])
   wear         Wear       @relation(fields: [wearId], references: [id])
 }

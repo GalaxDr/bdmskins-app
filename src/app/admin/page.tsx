@@ -32,6 +32,8 @@ interface SkinItem {
   imgLink: string;
   inspectLink: string;
   isStatTrak: boolean;
+  hasStickers: boolean;
+  hasLowFloat: boolean;
   skinWeaponId: number;
   skinWeapon: {
     skin: Skin;
@@ -60,6 +62,8 @@ export default function AdminPage() {
     imgLink: "",
     inspectLink: "",
     isStatTrak: false,
+    hasStickers: false,
+    hasLowFloat: false,
   });
 
   function getWearIdFromFloat(floatValue: number): number {
@@ -159,7 +163,7 @@ export default function AdminPage() {
   
 
   const addOrUpdateSkinItem = async () => {
-    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink, isStatTrak} = newSkinItem;
+    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink, isStatTrak, hasStickers, hasLowFloat} = newSkinItem;
   
     if (!skinId || !weaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim() || wearId === null) {
       alert("Preencha todos os campos antes de adicionar o produto.");
@@ -181,6 +185,8 @@ export default function AdminPage() {
         imgLink,
         inspectLink,
         isStatTrak,
+        hasStickers,
+        hasLowFloat,
       }),
     });
   
@@ -195,6 +201,8 @@ export default function AdminPage() {
       imgLink: "",
       inspectLink: "",
       isStatTrak: false,
+      hasStickers: false,
+      hasLowFloat: false,
     });
     setEditing(false);
     fetchSkinItems();
@@ -212,6 +220,8 @@ export default function AdminPage() {
       imgLink: item.imgLink,
       inspectLink: item.inspectLink,
       isStatTrak: item.isStatTrak,
+      hasStickers: item.hasStickers,
+      hasLowFloat: item.hasLowFloat
     });
     setEditing(true);
   };
@@ -293,7 +303,7 @@ export default function AdminPage() {
               onChange={handleInputChange}
               className="mb-4 bg-gray-700 text-white"
             />
-            <label className="text-white mb-4 my-4">
+            <label className="text-white mb-4 my-4 mr-2">
               <input
                 type="checkbox"
                 checked={newSkinItem.isStatTrak}
@@ -301,6 +311,24 @@ export default function AdminPage() {
                 className="mr-2 mb-4"
               />
               StatTrak
+            </label>
+            <label className="text-white mb-4 my-4 mr-2">
+              <input
+                type="checkbox"
+                checked={newSkinItem.hasStickers}
+                onChange={(e) => setNewSkinItem((prev) => ({ ...prev, hasStickers: e.target.checked }))}
+                className="mr-2 mb-4"
+              />
+              Stickers
+            </label>
+            <label className="text-white mb-4 my-4">
+              <input
+                type="checkbox"
+                checked={newSkinItem.hasLowFloat}
+                onChange={(e) => setNewSkinItem((prev) => ({ ...prev, hasLowFloat: e.target.checked }))}
+                className="mr-2 mb-4"
+              />
+              Good Float
             </label>
             <Input
               id="float"
@@ -347,6 +375,8 @@ export default function AdminPage() {
                     imgLink: "",
                     inspectLink: "",
                     isStatTrak: false,
+                    hasStickers: false,
+                    hasLowFloat: false,
                   });
                 }}
                 className="w-full mt-2 bg-red-600"
