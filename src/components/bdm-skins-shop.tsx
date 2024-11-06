@@ -165,8 +165,8 @@ export function BdmSkinsShop() {
                 <div className="flex flex-col space-y-2 flex-grow">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
-                      <p className="text-2xl font-bold text-blue-400">R${item.price.toFixed(2)}</p>
-                      <p className="text-xl font-bold text-red-500 line-through">R${(item.price * 1.35).toFixed(2)}</p>
+                      <p className="text-2xl font-bold text-blue-400">R${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price)}</p>
+                      <p className="text-xl font-bold text-red-500 line-through">R${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price * 1.35)}</p>
                     </div>
                     
                   </div>
