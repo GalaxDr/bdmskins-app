@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const requests = new Map<string, number[]>();
-const LIMIT = 5; // Limite de requisições
+const LIMIT = 20; // Limite de requisições
 const WINDOW_MS = 60 * 1000; // Janela de tempo em milissegundos (1 minuto)
 
 function rateLimit(ip: string): boolean {
