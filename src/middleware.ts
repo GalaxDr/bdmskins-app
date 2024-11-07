@@ -6,17 +6,31 @@ const requests = new Map<string, number[]>();
 const LIMIT = 20; // Limite de requisições
 const WINDOW_MS = 60 * 1000; // Janela de tempo em milissegundos (1 minuto)
 
+// Token de autenticação para operações restritas
+const ADMIN_API_TOKEN = process.env.NEXT_PUBLIC_ADMIN_API_TOKEN;
+
+function getClientIP(req: NextRequest): string {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0] || // Tenta obter o IP real
+    req.headers.get("x-real-ip") || // Usa `x-real-ip` se estiver disponível
+    "unknown"
+  );
+}
+
 function rateLimit(ip: string): boolean {
   const now = Date.now();
   const windowStart = now - WINDOW_MS;
 
   // Limpa requisições antigas
-  requests.forEach((timestamps, key) => {
-    requests.set(key, timestamps.filter((timestamp) => timestamp > windowStart));
+  for (const [key, timestamps] of requests.entries()) {
+    requests.set(
+      key,
+      timestamps.filter((timestamp) => timestamp > windowStart)
+    );
     if (requests.get(key)!.length === 0) {
       requests.delete(key);
     }
-  });
+  }
 
   // Obter histórico de requisições do IP atual
   const timestamps = requests.get(ip) || [];
@@ -33,14 +47,26 @@ function rateLimit(ip: string): boolean {
 }
 
 export function middleware(req: NextRequest) {
-  // Obtenha o IP do cabeçalho `x-forwarded-for` ou defina como "unknown" se não estiver disponível
-  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  const ip = getClientIP(req);
+  const method = req.method;
 
+  // Aplicar limite de requisições a todas as rotas da API
   if (!rateLimit(ip)) {
     return new NextResponse(
       JSON.stringify({ error: "Too many requests, please try again later." }),
       { status: 429, headers: { "Content-Type": "application/json" } }
     );
+  }
+
+  // Restringir métodos POST, PUT, DELETE com autenticação
+  if (["POST", "PUT", "DELETE"].includes(method)) {
+    const authToken = req.headers.get("authorization");
+    if (!authToken || authToken !== `Bearer ${ADMIN_API_TOKEN}`) {
+      return new NextResponse(
+        JSON.stringify({ error: "Unauthorized request" }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
+    }
   }
 
   return NextResponse.next();

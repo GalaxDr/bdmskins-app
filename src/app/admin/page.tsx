@@ -176,7 +176,9 @@ export default function AdminPage() {
 
     await fetch(endpoint, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_API_TOKEN}`, 
+       },
       body: JSON.stringify({
         skinWeaponId,
         price: parseFloat(price),
@@ -230,6 +232,9 @@ export default function AdminPage() {
     if (confirm("Tem certeza de que deseja deletar esta skin?")) {
       await fetch(`/api/skinitem/${id}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_API_TOKEN}`, // Envia o token no cabeçalho
+        },
       });
       fetchSkinItems();
     }
