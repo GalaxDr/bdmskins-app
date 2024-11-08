@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -87,6 +87,25 @@ export default function AdminPage() {
   }
 
   const [editing, setEditing] = useState(false);
+  
+  const fetchWears = useCallback(async () => {
+    const response = await fetch('/api/wears');
+    const data = await response.json();
+    setWears(data);
+  }, [setWears]);
+  
+  const fetchSkinItems = useCallback(async () => {
+    const response = await fetch('/api/skinitem');
+    const data = await response.json();
+    setSkinItems(data);
+  }, [setSkinItems]);
+
+  const fetchWeapons = useCallback(async () => {
+    const response = await fetch('/api/weapons');
+    const data = await response.json();
+    data.sort((a: Weapon, b: Weapon) => a.name.localeCompare(b.name));
+    setWeapons(data);
+  }, [setWeapons]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -94,7 +113,7 @@ export default function AdminPage() {
       fetchWears();
       fetchWeapons();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, fetchSkinItems, fetchWeapons, fetchWears]);
 
   const handleLogin = () => {
     if (username === process.env.NEXT_PUBLIC_USERNAME && password === process.env.NEXT_PUBLIC_PASSWORD) {
@@ -103,25 +122,6 @@ export default function AdminPage() {
       console.log(process.env.USERNAME, process.env.PASSWORD);
       alert('Credenciais inválidas');
     }
-  };
-
-  const fetchWears = async () => {
-    const response = await fetch('/api/wears');
-    const data: Wear[] = await response.json();
-    setWears(data);
-  };
-
-  const fetchWeapons = async () => {
-    const response = await fetch('/api/weapons');
-    const data: Weapon[] = await response.json();
-    data.sort((a, b) => a.name.localeCompare(b.name));
-    setWeapons(data);
-  };
-
-  const fetchSkinItems = async () => {
-    const response = await fetch('/api/skinitem');
-    const data: SkinItem[] = await response.json();
-    setSkinItems(data);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

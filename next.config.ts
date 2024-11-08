@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
               default-src 'self';
               script-src 'self' 'unsafe-inline' 'unsafe-eval';
               style-src 'self' 'unsafe-inline';
-              img-src 'self' data: https://trustedimages.com https://community.cloudflare.steamstatic.com https://community.fastly.steamstatic.com;
+              img-src 'self' data: https://trustedimages.com https://community.cloudflare.steamstatic.com https://community.fastly.steamstatic.com https://community.akamai.steamstatic.com;
               connect-src 'self';
               frame-ancestors 'self';
             `.replace(/\s{2,}/g, " "),
@@ -41,6 +41,11 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+};
+module.exports = {
+  images: {
+    domains: ["community.cloudflare.steamstatic.com", "community.fastly.steamstatic.com", "community.akamai.steamstatic.com"],
   },
 };
 

@@ -38,15 +38,15 @@ export function BdmSkinsShop() {
 
       // Mapeia os dados para o formato que o frontend espera
       const mappedData = data.map((item: { id: number;
-         skinWeapon: { skin: { name: string };
+          skinWeapon: { skin: { name: string };
           weapon: { name: string; weaponType: { name: string } } };
-           price: number;
-            float: number;
-             wear: { name: string };
-              imgLink: string; inspectLink: string;
-               isStatTrak: boolean;
-                hasStickers: boolean;
-                 hasLowFloat: boolean; }) => ({
+          price: number;
+          float: number;
+          wear: { name: string };
+          imgLink: string; inspectLink: string;
+          isStatTrak: boolean;
+          hasStickers: boolean;
+          hasLowFloat: boolean; }) => ({
         id: item.id,
         name: item.skinWeapon.skin.name,
         price: item.price,
