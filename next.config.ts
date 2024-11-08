@@ -11,9 +11,13 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: `
               default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval';
+              script-src 'self';
               style-src 'self' 'unsafe-inline';
-              img-src 'self' data: https://trustedimages.com https://community.cloudflare.steamstatic.com https://community.fastly.steamstatic.com https://community.akamai.steamstatic.com;
+              img-src 'self' data: 
+                https://trustedimages.com 
+                https://community.cloudflare.steamstatic.com 
+                https://community.fastly.steamstatic.com 
+                https://community.akamai.steamstatic.com;
               connect-src 'self';
               frame-ancestors 'self';
             `.replace(/\s{2,}/g, " "),
