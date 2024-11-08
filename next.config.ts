@@ -1,6 +1,7 @@
-import type { NextConfig } from "next";
+import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   async headers() {
     return [
       {
@@ -16,6 +17,10 @@ const nextConfig: NextConfig = {
               connect-src 'self';
               frame-ancestors 'self';
             `.replace(/\s{2,}/g, " "),
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
           },
           {
             key: "X-Frame-Options",
