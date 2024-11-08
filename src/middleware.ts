@@ -3,16 +3,14 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const requests = new Map<string, number[]>();
-const LIMIT = 20; // Limite de requisições
+const LIMIT = 15; // Limite de requisições
 const WINDOW_MS = 60 * 1000; // Janela de tempo em milissegundos (1 minuto)
-
-// Token de autenticação para operações restritas
 const ADMIN_API_TOKEN = process.env.NEXT_PUBLIC_ADMIN_API_TOKEN;
 
 function getClientIP(req: NextRequest): string {
   return (
-    req.headers.get("x-forwarded-for")?.split(",")[0] || // Tenta obter o IP real
-    req.headers.get("x-real-ip") || // Usa `x-real-ip` se estiver disponível
+    req.headers.get("x-forwarded-for")?.split(",")[0] || 
+    req.headers.get("x-real-ip") || 
     "unknown"
   );
 }
@@ -21,7 +19,6 @@ function rateLimit(ip: string): boolean {
   const now = Date.now();
   const windowStart = now - WINDOW_MS;
 
-  // Limpa requisições antigas
   for (const [key, timestamps] of requests.entries()) {
     requests.set(
       key,
@@ -32,15 +29,11 @@ function rateLimit(ip: string): boolean {
     }
   }
 
-  // Obter histórico de requisições do IP atual
   const timestamps = requests.get(ip) || [];
-
-  // Verifica se o limite foi excedido
   if (timestamps.length >= LIMIT) {
     return false;
   }
 
-  // Atualiza o histórico de requisições do IP atual
   timestamps.push(now);
   requests.set(ip, timestamps);
   return true;
@@ -49,23 +42,42 @@ function rateLimit(ip: string): boolean {
 export function middleware(req: NextRequest) {
   const ip = getClientIP(req);
   const method = req.method;
+  const url = req.nextUrl.pathname;
 
-  // Aplicar limite de requisições a todas as rotas da API
-  if (!rateLimit(ip)) {
-    return new NextResponse(
-      JSON.stringify({ error: "Too many requests, please try again later." }),
-      { status: 429, headers: { "Content-Type": "application/json" } }
-    );
+  // Restringe métodos na URL base "/"
+  if (url === "/") {
+    if (!["GET", "HEAD"].includes(method)) {
+      return new NextResponse(
+        JSON.stringify({ error: `Method ${method} not allowed on the base URL` }),
+        { status: 405, headers: { "Content-Type": "application/json" } }
+      );
+    }
   }
 
-  // Restringir métodos POST, PUT, DELETE com autenticação
-  if (["POST", "PUT", "DELETE"].includes(method)) {
-    const authToken = req.headers.get("authorization");
-    if (!authToken || authToken !== `Bearer ${ADMIN_API_TOKEN}`) {
+  // Restringir métodos OPTIONS na API
+  if (url.startsWith("/api")) {
+    if (method === "OPTIONS") {
       return new NextResponse(
-        JSON.stringify({ error: "Unauthorized request" }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Method OPTIONS not allowed" }),
+        { status: 405, headers: { "Content-Type": "application/json" } }
       );
+    }
+
+    if (!rateLimit(ip)) {
+      return new NextResponse(
+        JSON.stringify({ error: "Too many requests, please try again later." }),
+        { status: 429, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
+      const authToken = req.headers.get("authorization");
+      if (!authToken || authToken !== `Bearer ${ADMIN_API_TOKEN}`) {
+        return new NextResponse(
+          JSON.stringify({ error: "Unauthorized request" }),
+          { status: 401, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
   }
 
@@ -73,5 +85,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: "/api/:path*", // Aplica o middleware a todas as rotas da API
+  matcher: ["/", "/api/:path*"], 
 };
