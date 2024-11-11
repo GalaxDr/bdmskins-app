@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 export async function GET() {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://localhost:3000";
 
