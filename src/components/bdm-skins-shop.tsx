@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import Image from "next/image";
 
 interface SkinItem {
   id: number;
@@ -139,11 +140,15 @@ export function BdmSkinsShop() {
               className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
             >
               <CardHeader className="p-4">
-                <div className="aspect-square relative bg-gray-900 rounded-lg overflow-hidden">
-                  <img
+                <div className="relative aspect-square bg-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
+                  <Image
                     src={item.image}
                     alt={item.name}
-                    className="object-contain w-3/4 h-3/4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                    width={256}
+                    height={256}
+                    unoptimized
+                    objectFit="contain"
+                    className="transition-transform duration-300 hover:scale-105 filter saturate-225"
                   />
                   {item.hasLowFloat && (
                   <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">

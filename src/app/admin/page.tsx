@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 interface Skin {
   id: number;
@@ -396,7 +397,15 @@ export default function AdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
               {skinItems.map((item) => (
                 <div key={item.id} className="bg-gray-900 p-4 rounded-lg shadow-lg">
-                  <img src={item.imgLink} alt={item.skinWeapon.skin.name} className="w-32 h-32 object-cover rounded-md mb-2 mx-auto" />
+                  <Image
+                    src={item.imgLink}
+                    alt={item.skinWeapon.skin.name}
+                    width={132}
+                    height={132}
+                    unoptimized
+                    objectFit="contain"
+                    className="object-cover rounded-md mb-2 mx-auto"
+                  />
                   <div className="flex justify-between mb-2">
                     <span className="font-bold">{item.skinWeapon.skin.name} {item.isStatTrak ? "(StatTrak™)" : ""}</span>
                     <span className="text-blue-400">R${item.price.toFixed(2)}</span>
