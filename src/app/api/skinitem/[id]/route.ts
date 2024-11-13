@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const data = await request.json();
-  const { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak, hasStickers, hasLowFloat } = data;
+  const { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak, hasStickers, hasLowFloat, tradeLockStartDate } = data;
 
   if (!skinWeaponId || !wearId || float == null || price == null || !inspectLink || !imgLink || isStatTrak == null || hasStickers == null || hasLowFloat == null) {
     console.error("Missing required fields:", { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak, hasStickers, hasLowFloat });
@@ -50,17 +50,13 @@ export async function POST(request: Request) {
         isStatTrak,
         hasStickers,
         hasLowFloat,
+        tradeLockStartDate: tradeLockStartDate ? new Date(tradeLockStartDate) : null, // Adiciona o campo de data de bloqueio
       },
     });
     return NextResponse.json(newSkinItem);
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error creating item:", error.message);
-      return NextResponse.json({ error: "Failed to create item", details: error.message }, { status: 500 });
-    } else {
-      console.error("Unexpected error:", error);
-      return NextResponse.json({ error: "Failed to create item", details: "Unexpected error" }, { status: 500 });
-    }
+    console.error("Error creating item:", error);
+    return NextResponse.json({ error: "Failed to create item", details: error instanceof Error ? error.message : "Unexpected error" }, { status: 500 });
   }
 }
 
@@ -87,12 +83,13 @@ export async function PUT(request: Request) {
         isStatTrak: data.isStatTrak !== undefined ? data.isStatTrak : undefined,
         hasStickers: data.hasStickers !== undefined ? data.hasStickers : undefined,
         hasLowFloat: data.hasLowFloat !== undefined ? data.hasLowFloat : undefined,
+        tradeLockStartDate: data.tradeLockStartDate ? new Date(data.tradeLockStartDate) : undefined, // Atualiza o campo de data de bloqueio
       },
     });
     return NextResponse.json(updatedSkinItem);
   } catch (error) {
     console.error("PUT request failed:", error);
-    return NextResponse.json({ error: "Update failed" }, { status: 500 });
+    return NextResponse.json({ error: "Update failed", details: error instanceof Error ? error.message : "Unexpected error" }, { status: 500 });
   }
 }
 
@@ -112,6 +109,6 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ message: 'Skin item deleted' });
   } catch (error) {
     console.error("DELETE request failed:", error);
-    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+    return NextResponse.json({ error: "Delete failed", details: error instanceof Error ? error.message : "Unexpected error" }, { status: 500 });
   }
 }

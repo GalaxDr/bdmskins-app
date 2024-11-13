@@ -36,6 +36,7 @@ interface SkinItem {
   hasStickers: boolean;
   hasLowFloat: boolean;
   skinWeaponId: number;
+  tradeLockStartDate?: string;
   skinWeapon: {
     skin: Skin;
     weapon: Weapon;
@@ -65,6 +66,7 @@ export default function AdminPage() {
     isStatTrak: false,
     hasStickers: false,
     hasLowFloat: false,
+    tradeLockStartDate: "", 
   });
 
   function getWearIdFromFloat(floatValue: number): number {
@@ -164,9 +166,10 @@ export default function AdminPage() {
   
 
   const addOrUpdateSkinItem = async () => {
-    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink, isStatTrak, hasStickers, hasLowFloat} = newSkinItem;
+    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink, isStatTrak, hasStickers, hasLowFloat, tradeLockStartDate} = newSkinItem;
   
-    if (!skinId || !weaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim() || wearId === null) {
+    if (!skinId || !weaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim()
+      || wearId === null || isStatTrak === null || hasStickers === null || hasLowFloat === null || tradeLockStartDate === "") {
       alert("Preencha todos os campos antes de adicionar o produto.");
       return;
     }
@@ -179,7 +182,7 @@ export default function AdminPage() {
       method,
       headers: { 'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_API_TOKEN}`, 
-       },
+      },
       body: JSON.stringify({
         skinWeaponId,
         price: parseFloat(price),
@@ -190,6 +193,7 @@ export default function AdminPage() {
         isStatTrak,
         hasStickers,
         hasLowFloat,
+        tradeLockStartDate,
       }),
     });
   
@@ -206,6 +210,7 @@ export default function AdminPage() {
       isStatTrak: false,
       hasStickers: false,
       hasLowFloat: false,
+      tradeLockStartDate: "",
     });
     setEditing(false);
     fetchSkinItems();
@@ -224,7 +229,8 @@ export default function AdminPage() {
       inspectLink: item.inspectLink,
       isStatTrak: item.isStatTrak,
       hasStickers: item.hasStickers,
-      hasLowFloat: item.hasLowFloat
+      hasLowFloat: item.hasLowFloat,
+      tradeLockStartDate: item.tradeLockStartDate || "",
     });
     setEditing(true);
   };
@@ -337,6 +343,15 @@ export default function AdminPage() {
               Good Float
             </label>
             <Input
+              id="tradeLockStartDate"
+              name="tradeLockStartDate"
+              type="date"
+              placeholder="Data de Bloqueio de Troca"
+              value={newSkinItem.tradeLockStartDate}
+              onChange={handleInputChange}
+              className="mb-4 bg-gray-700 text-white"
+            />
+            <Input
               id="float"
               name="float"
               placeholder="Float"
@@ -383,6 +398,7 @@ export default function AdminPage() {
                     isStatTrak: false,
                     hasStickers: false,
                     hasLowFloat: false,
+                    tradeLockStartDate: "",
                   });
                 }}
                 className="w-full mt-2 bg-red-600"
@@ -413,6 +429,13 @@ export default function AdminPage() {
                   <p className="text-sm text-gray-400 mb-2">{item.skinWeapon.weapon.name} ({item.skinWeapon.weapon.weaponType.name})</p>
                   <p className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</p>
                   <p className="text-sm text-gray-400 mb-2">Wear: {item.wear.name}</p>
+                  <p className="text-sm text-gray-400">
+                    {item.tradeLockStartDate
+                      ? `Trade Lock Start: ${new Intl.DateTimeFormat('pt-BR', {
+                          timeZone: 'UTC',
+                        }).format(new Date(item.tradeLockStartDate))}`
+                      : "No Trade Lock"}
+                  </p>
                   <Button
                     onClick={() => editSkinItem(item)}
                     className="w-full bg-blue-600"

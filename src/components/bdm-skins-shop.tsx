@@ -20,12 +20,16 @@ interface SkinItem {
   isStatTrak: boolean;
   hasStickers: boolean;
   hasLowFloat: boolean;
+  tradeLockStartDate?: string;
+  tradeLockDurationDays?: number;
 }
 
 export function BdmSkinsShop() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<"price-asc" | "price-desc" | "float-asc" | "float-desc">("price-asc");
   const [skinItems, setSkinItems] = useState<SkinItem[]>([]);
+
+
 
   // Função para buscar os dados de `skinItem` da API
   const fetchSkinItems = async () => {
@@ -47,7 +51,8 @@ export function BdmSkinsShop() {
           imgLink: string; inspectLink: string;
           isStatTrak: boolean;
           hasStickers: boolean;
-          hasLowFloat: boolean; }) => ({
+          hasLowFloat: boolean;
+          tradeLockStartDate: Date;}) => ({
         id: item.id,
         name: item.skinWeapon.skin.name,
         price: item.price,
@@ -60,6 +65,7 @@ export function BdmSkinsShop() {
         isStatTrak: item.isStatTrak,
         hasStickers: item.hasStickers,
         hasLowFloat: item.hasLowFloat,
+        tradeLockStartDate: item.tradeLockStartDate || null,
       }));
       
       setSkinItems(mappedData);
@@ -89,7 +95,18 @@ export function BdmSkinsShop() {
         return b.float - a.float;
       }
     });
-
+    
+    function calculateDaysRemaining(tradeLockStartDate: string): number {
+      const now = new Date();
+      const startDate = new Date(tradeLockStartDate);
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 7); // Trade lock dura 7 dias
+    
+      const diffTime = endDate.getTime() - now.getTime();
+      const remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+      return Math.max(0, remainingDays); // Retorna 0 se a data já passou
+    }
   // Função para redirecionar para o WhatsApp com o nome da skin
   const handleBuyNowClick = (skinName: string) => {
     const message = `Olá, estou interessado na skin: ${encodeURIComponent(skinName)}`;
@@ -131,10 +148,10 @@ export function BdmSkinsShop() {
             </select>
           </div>
         </div>
-        
         {/* Skins Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredSkins.map((item) => (
+            
             <Card 
               key={item.id} 
               className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
@@ -169,13 +186,19 @@ export function BdmSkinsShop() {
                 </CardTitle>
                 <div className="flex flex-col space-y-2 flex-grow">
                   <div className="flex justify-between items-center">
+                  </div>
                     <div className="flex items-center space-x-2">
                       <p className="text-2xl font-bold text-blue-400">R${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price)}</p>
                       <p className="text-xl font-bold text-red-500 line-through">R${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price * 1.35)}</p>
                     </div>
                     
                   </div>
-                  
+                  <div className="flex flex-col space-y-2">
+                  <div className={`text-sm ${item.tradeLockStartDate && calculateDaysRemaining(item.tradeLockStartDate) > 0 ? "text-red-500" : "text-green-500"}`}>
+                    {item.tradeLockStartDate && calculateDaysRemaining(item.tradeLockStartDate) > 0
+                      ? `Trade Lock: ${calculateDaysRemaining(item.tradeLockStartDate)} ${calculateDaysRemaining(item.tradeLockStartDate) === 1 ? "day" : "days"}`
+                      : "No Trade Lock"}
+                  </div>
                   <div className="flex justify-between items-center">
                     <span className="px-2 py-1 bg-gray-600 rounded-full text-xs">{item.wear}</span>
                     <span className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</span>
