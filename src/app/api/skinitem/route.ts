@@ -31,10 +31,43 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const data = await request.json();
-  const { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak, hasStickers, hasLowFloat } = data;
+  const {
+    skinWeaponId,
+    wearId,
+    float,
+    price,
+    inspectLink,
+    imgLink,
+    isStatTrak,
+    hasStickers,
+    hasLowFloat,
+    tradeLockStartDate, // Adicionado o campo tradeLockStartDate
+  } = data;
 
-  if (!skinWeaponId || !wearId || float == null || price == null || !inspectLink || !imgLink || isStatTrak == null || hasStickers == null || hasLowFloat == null) {
-    console.error("Missing required fields:", { skinWeaponId, wearId, float, price, inspectLink, imgLink, isStatTrak, hasStickers, hasLowFloat });
+  // Validação de campos obrigatórios
+  if (
+    !skinWeaponId ||
+    !wearId ||
+    float == null ||
+    price == null ||
+    !inspectLink ||
+    !imgLink ||
+    isStatTrak == null ||
+    hasStickers == null ||
+    hasLowFloat == null
+  ) {
+    console.error("Missing required fields:", {
+      skinWeaponId,
+      wearId,
+      float,
+      price,
+      inspectLink,
+      imgLink,
+      isStatTrak,
+      hasStickers,
+      hasLowFloat,
+      tradeLockStartDate,
+    });
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
@@ -50,16 +83,15 @@ export async function POST(request: Request) {
         isStatTrak,
         hasStickers,
         hasLowFloat,
+        tradeLockStartDate: tradeLockStartDate ? new Date(tradeLockStartDate) : null, // Inclui a data de bloqueio
       },
     });
     return NextResponse.json(newSkinItem);
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error creating item:", error.message);
-      return NextResponse.json({ error: "Failed to create item", details: error.message }, { status: 500 });
-    } else {
-      console.error("Unexpected error:", error);
-      return NextResponse.json({ error: "Failed to create item", details: "Unexpected error" }, { status: 500 });
-    }
+    console.error("Error creating item:", error);
+    return NextResponse.json(
+      { error: "Failed to create item", details: error instanceof Error ? error.message : "Unexpected error" },
+      { status: 500 }
+    );
   }
 }
