@@ -100,7 +100,7 @@ export function BdmSkinsShop() {
       const now = new Date();
       const startDate = new Date(tradeLockStartDate);
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 7); // Trade lock dura 7 dias
+      endDate.setDate(startDate.getDate() + 8); // Trade lock dura 7 dias
     
       const diffTime = endDate.getTime() - now.getTime();
       const remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
