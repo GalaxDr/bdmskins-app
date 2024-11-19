@@ -21,7 +21,7 @@ function getWeaponType(weaponName: string): string | null {
 
 async function seedFromCSV() {
   // Prepara os registros de WeaponType no cache
-  const weaponTypeRecords: { [key: string]: any } = {};
+  const weaponTypeRecords: { [key: string]: { id: number; name: string } } = {};
   for (const type of Object.keys(weaponTypes)) {
     weaponTypeRecords[type] = await prisma.weaponType.upsert({
       where: { name: type },
@@ -30,8 +30,8 @@ async function seedFromCSV() {
     });
   }
 
-  const weaponsCache = new Map<string, any>();
-  const skinsCache = new Map<string, any>();
+  const weaponsCache = new Map<string, { id: number; name: string; weaponTypeId: number }>();
+  const skinsCache = new Map<string, { id: number; name: string }>();
 
   // Pré-carrega todas as armas e skins existentes no cache
   const [allWeapons, allSkins] = await Promise.all([
