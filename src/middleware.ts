@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 const requests = new Map<string, number[]>();
 const LIMIT = 15; // Limite de requisições
 const WINDOW_MS = 60 * 1000; // Janela de tempo em milissegundos (1 minuto)
-const ADMIN_API_TOKEN = process.env.NEXT_PUBLIC_ADMIN_API_TOKEN;
+const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
 
 function getClientIP(req: NextRequest): string {
   return (
@@ -44,6 +44,11 @@ export function middleware(req: NextRequest) {
   const method = req.method;
   const url = req.nextUrl.pathname;
 
+  // Permite POST /login sem restrições adicionais
+  if (url === "/api/login" && method === "POST") {
+    return NextResponse.next();
+  }
+
   // Restringe métodos na URL base "/"
   if (url === "/") {
     if (!["GET", "HEAD"].includes(method)) {
@@ -72,10 +77,19 @@ export function middleware(req: NextRequest) {
 
     if (["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
       const authToken = req.headers.get("authorization");
-      if (!authToken || authToken !== `Bearer ${ADMIN_API_TOKEN}`) {
+    
+      if (!authToken) {
         return new NextResponse(
-          JSON.stringify({ error: "Unauthorized request" }),
+          JSON.stringify({ error: "Authorization token is missing" }),
           { status: 401, headers: { "Content-Type": "application/json" } }
+        );
+      }
+    
+      const tokenParts = authToken.split(" ");
+      if (tokenParts[0] !== "Bearer" || tokenParts[1] !== ADMIN_API_TOKEN) {
+        return new NextResponse(
+          JSON.stringify({ error: "Invalid or malformed token" }),
+          { status: 403, headers: { "Content-Type": "application/json" } }
         );
       }
     }

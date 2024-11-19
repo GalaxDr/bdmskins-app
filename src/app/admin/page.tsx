@@ -118,14 +118,35 @@ export default function AdminPage() {
     }
   }, [isAuthenticated, fetchSkinItems, fetchWeapons, fetchWears]);
 
-  const handleLogin = () => {
-    if (username === process.env.NEXT_PUBLIC_USERNAME && password === process.env.NEXT_PUBLIC_PASSWORD) {
-      setIsAuthenticated(true);
-    } else {
-      console.log(process.env.USERNAME, process.env.PASSWORD);
-      alert('Credenciais inválidas');
+  async function handleLogin() {
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (!response.ok) {
+        alert("Credenciais inválidas.");
+        return;
+      }
+  
+      const data = await response.json();
+  
+      // Salva o token no localStorage
+      if (data.token) {
+        sessionStorage.setItem("authToken", data.token);
+        setIsAuthenticated(true);
+      } else {
+        alert("Erro ao receber o token.");
+      }
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
     }
-  };
+  }
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -181,7 +202,7 @@ export default function AdminPage() {
     await fetch(endpoint, {
       method,
       headers: { 'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_API_TOKEN}`, 
+        Authorization: `Bearer ${sessionStorage.getItem("authToken")}`, 
       },
       body: JSON.stringify({
         skinWeaponId,
@@ -240,7 +261,7 @@ export default function AdminPage() {
       await fetch(`/api/skinitem/${id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_API_TOKEN}`, // Envia o token no cabeçalho
+          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`, // Envia o token no cabeçalho
         },
       });
       fetchSkinItems();
