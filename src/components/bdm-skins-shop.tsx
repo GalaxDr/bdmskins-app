@@ -102,7 +102,7 @@ export function BdmSkinsShop() {
       const endDate = new Date(startDate);
     
       // Adiciona os 8 dias (7 de trade lock + 1 adicional)
-      endDate.setDate(startDate.getDate() + 8);
+      endDate.setDate(startDate.getDate() + 9);
     
       // Ajusta o horário para 5:00 da manhã no horário de Brasília (GMT-3)
       endDate.setHours(5, 0, 0, 0);
