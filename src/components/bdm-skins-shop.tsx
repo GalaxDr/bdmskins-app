@@ -100,13 +100,25 @@ export function BdmSkinsShop() {
       const now = new Date();
       const startDate = new Date(tradeLockStartDate);
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 8); // Trade lock dura 7 dias
     
-      const diffTime = endDate.getTime() - now.getTime();
+      // Adiciona os 8 dias (7 de trade lock + 1 adicional)
+      endDate.setDate(startDate.getDate() + 8);
+    
+      // Ajusta o horário para 5:00 da manhã no horário de Brasília (GMT-3)
+      endDate.setHours(5, 0, 0, 0);
+    
+      // Converte o horário atual para o mesmo fuso horário (GMT-3)
+      const nowInGMT3 = new Date(
+        now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" })
+      );
+    
+      // Calcula a diferença de tempo
+      const diffTime = endDate.getTime() - nowInGMT3.getTime();
       const remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-      return Math.max(0, remainingDays); // Retorna 0 se a data já passou
+      return Math.max(0, remainingDays); // Garante que nunca seja negativo
     }
+    
   // Função para redirecionar para o WhatsApp com o nome da skin
   const handleBuyNowClick = (skinName: string) => {
     const message = `Olá, estou interessado na skin: ${encodeURIComponent(skinName)}`;
