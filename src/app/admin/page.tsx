@@ -162,8 +162,21 @@ export default function AdminPage() {
   };
 
   const handleWeaponChange = async (weaponId: number) => {
-    setNewSkinItem((prev) => ({ ...prev, weaponId }));
-    
+    const selectedWeapon = weapons.find((weapon) => weapon.id === weaponId);
+  
+    setNewSkinItem((prev) => ({
+      ...prev,
+      weaponId,
+      float: selectedWeapon?.weaponType.name === "Agent" ? "0" : prev.float, // Define float como "0" para agentes
+    }));
+  
+    if (selectedWeapon?.weaponType.name === "Agent") {
+      setNewSkinItem((prev) => ({
+        ...prev,
+        wearId: 1, // Remove o wearId para agentes
+      }));
+    }
+  
     try {
       const response = await fetch(`/api/skinsByWeaponId?weaponId=${weaponId}`);
       let data: Skin[] = await response.json();
@@ -187,28 +200,37 @@ export default function AdminPage() {
   
 
   const addOrUpdateSkinItem = async () => {
-    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink, isStatTrak, hasStickers, hasLowFloat, tradeLockStartDate} = newSkinItem;
+    const { id, skinId, weaponId, price, float, wearId, imgLink, inspectLink, isStatTrak, hasStickers, hasLowFloat, tradeLockStartDate } = newSkinItem;
   
-    if (!skinId || !weaponId || !price.trim() || !float.trim() || !imgLink.trim() || !inspectLink.trim()
-      || wearId === null || isStatTrak === null || hasStickers === null || hasLowFloat === null || tradeLockStartDate === "") {
-      alert("Preencha todos os campos antes de adicionar o produto.");
+    const selectedWeapon = weapons.find((weapon) => weapon.id === weaponId);
+  
+    if (
+      !skinId ||
+      !weaponId ||
+      !price.trim() ||
+      (!imgLink.trim() && selectedWeapon?.weaponType.name !== "Agent") || // imgLink opcional para agentes
+      (!inspectLink.trim() && selectedWeapon?.weaponType.name !== "Agent") || // inspectLink opcional para agentes
+      (selectedWeapon?.weaponType.name !== "Agent" && (!float.trim() || wearId === 1)) // float e wearId opcionais para agentes
+    ) {
+      alert("Preencha todos os campos obrigatórios antes de adicionar o produto.");
       return;
     }
-
+  
     const skinWeaponId = await fetchOrCreateSkinWeaponId(skinId, weaponId);
     const endpoint = id ? `/api/skinitem/${id}` : '/api/skinitem';
     const method = id ? 'PUT' : 'POST';
-
+  
     await fetch(endpoint, {
       method,
-      headers: { 'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem("authToken")}`, 
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
       },
       body: JSON.stringify({
         skinWeaponId,
         price: parseFloat(price),
-        float: parseFloat(float),
-        wearId,
+        float: selectedWeapon?.weaponType.name === "Agent" ? 0 : parseFloat(float),
+        wearId: selectedWeapon?.weaponType.name === "Agent" ? 1 : wearId,
         imgLink,
         inspectLink,
         isStatTrak,
@@ -236,6 +258,7 @@ export default function AdminPage() {
     setEditing(false);
     fetchSkinItems();
   };
+  
 
   const editSkinItem = (item: SkinItem) => {
     setNewSkinItem({
@@ -379,6 +402,10 @@ export default function AdminPage() {
               value={newSkinItem.float}
               onChange={(e) => handleFloatChange(e.target.value)}
               className="mb-4 bg-gray-700 text-white"
+              disabled={
+                weapons.find((weapon) => weapon.id === newSkinItem.weaponId)?.weaponType
+                  .name === "Agent"
+              }
             />
             <Input
               id="imgLink"
