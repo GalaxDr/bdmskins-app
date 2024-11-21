@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "SkinItem" ALTER COLUMN "wearId" SET DEFAULT 1,
+ALTER COLUMN "float" SET DEFAULT 0;

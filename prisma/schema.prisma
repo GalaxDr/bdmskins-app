@@ -47,8 +47,8 @@ model SkinWeapon {
 model SkinItem {
   id           Int        @id @default(autoincrement())
   skinWeaponId Int
-  wearId       Int
-  float        Float
+  wearId       Int        @default(1)
+  float        Float      @default(0)
   price        Float
   inspectLink  String
   imgLink      String

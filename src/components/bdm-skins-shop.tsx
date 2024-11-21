@@ -212,8 +212,14 @@ export function BdmSkinsShop() {
                       : "No Trade Lock"}
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="px-2 py-1 bg-gray-600 rounded-full text-xs">{item.wear}</span>
-                    <span className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</span>
+                    {item.weaponType === "Agent" ? (
+                      <span className="px-2 py-1 bg-gray-600 rounded-full text-xs">Agent</span>
+                    ) : (
+                      <>
+                        <span className="px-2 py-1 bg-gray-600 rounded-full text-xs">{item.wear}</span>
+                        <span className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</span>
+                      </>
+                    )}
                   </div>
                   <Button
                     onClick={() => handleBuyNowClick(`${item.weapon} | ${item.name}`)}
