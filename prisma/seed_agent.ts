@@ -53,6 +53,19 @@ const agents = [
   { skin: "D Squadron Officer", weapon: "NZSAS" },
   { skin: "Primeiro Tenente", weapon: "Brazilian 1st Battalion" },
   { skin: "Jungle Rebel", weapon: "Elite Crew" },
+  { skin: "Trapper Aggressor", weapon: "Guerrilla Warfare" },
+  { skin: "B Squadron Officer", weapon: "SAS" },
+  { skin: "Street Soldier", weapon: "Phoenix" },
+  { skin: "3rd Commando Company", weapon: "KSK" },
+  { skin: "Seal Team 6 Soldier", weapon: "NSWC SEAL" },
+  { skin: "Chem-Haz Specialist", weapon: "SWAT" },
+  { skin: "Bio-Haz Specialist", weapon: "SWAT" },
+  { skin: "Operator", weapon: "FBI SWAT" },
+  { skin: "Ground Rebel", weapon: "Elite Crew" },
+  { skin: "Aspirant", weapon: "Gendar"},
+  { skin: "Dragomir", weapon: "Sabre Footsoldier" },
+  { skin: "Soldier", weapon: "Phoenix" },
+  { skin: "Enforcer", weapon: "Phoenix" },
 ];
 
 async function seedAgents() {

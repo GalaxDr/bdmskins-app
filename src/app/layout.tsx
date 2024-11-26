@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Bdm Skins Shop",
-  description: "Premium CS2 Skins Marketplace",
+  title: "Bdm Skins",
+  description: "Premium CS2 Skins Marketplace, compre skins pelo melhor preço do mercado, aceitamos pix, boleto, cartão de crédito até 12x e criptomoedas.",
 };
 
 export default function RootLayout({

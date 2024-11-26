@@ -134,6 +134,7 @@ export function BdmSkinsShop() {
             BDM Skins
           </h1>
           <p className="text-gray-400">Premium CS2 Skins Marketplace</p>
+          <meta name="keywords" content="bdmskins, bdm skins, skins cs2, skins csgo, comprar skins cs2, marketplace skins cs2"></meta>
         </header>
 
         {/* Search and Sort Section */}
