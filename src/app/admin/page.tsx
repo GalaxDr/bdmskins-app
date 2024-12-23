@@ -80,12 +80,13 @@ export default function AdminPage() {
 
   function handleFloatChange(float: string) {
     const floatValue = parseFloat(float);
-    if (isNaN(floatValue)) return;
+    if (isNaN(floatValue) || floatValue < 0 || floatValue > 1) return;
+    const formattedFloat = floatValue.toFixed(8); // Garante 8 casas decimais
     const wearId = getWearIdFromFloat(floatValue);
     setNewSkinItem((prev) => ({
       ...prev,
-      float: float,
-      wearId: wearId,
+      float: formattedFloat,
+      wearId,
     }));
   }
 
@@ -208,11 +209,10 @@ export default function AdminPage() {
       !skinId ||
       !weaponId ||
       !price.trim() ||
-      (!imgLink.trim() && selectedWeapon?.weaponType.name !== "Agent") || // imgLink opcional para agentes
-      (!inspectLink.trim() && selectedWeapon?.weaponType.name !== "Agent") || // inspectLink opcional para agentes
-      (selectedWeapon?.weaponType.name !== "Agent" && (!float.trim() || wearId === 1)) // float e wearId opcionais para agentes
+      (selectedWeapon?.weaponType.name !== "Agent" &&
+        (!float.trim() || isNaN(parseFloat(float)) || parseFloat(float) < 0 || parseFloat(float) > 1)) // Validação correta do float
     ) {
-      alert("Preencha todos os campos obrigatórios antes de adicionar o produto.");
+      alert("Preencha todos os campos obrigatórios corretamente.");
       return;
     }
   
