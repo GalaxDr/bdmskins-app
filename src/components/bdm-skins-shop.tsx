@@ -133,7 +133,7 @@ export function BdmSkinsShop() {
           <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
             BDM Skins
           </h1>
-          <p className="text-gray-400">Premium CS2 Skins Marketplace</p>
+          <p className="text-gray-400">Marketplace Premium de CS2 </p>
           <meta name="keywords" content="bdmskins, bdm skins, skins cs2, skins csgo, comprar skins cs2, marketplace skins cs2"></meta>
         </header>
 
@@ -143,7 +143,7 @@ export function BdmSkinsShop() {
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Search skins..."
+                placeholder="Procurar skins..."
                 className="pl-10 bg-gray-800 border-gray-700 text-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -182,7 +182,7 @@ export function BdmSkinsShop() {
                   />
                   {item.hasLowFloat && (
                   <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                    Good Float
+                    Bom Float
                   </div>
                 )}
                 {/* Adesivo para stickers */}
@@ -209,8 +209,8 @@ export function BdmSkinsShop() {
                   <div className="flex flex-col space-y-2">
                   <div className={`text-sm ${item.tradeLockStartDate && calculateDaysRemaining(item.tradeLockStartDate) > 0 ? "text-red-500" : "text-green-500"}`}>
                     {item.tradeLockStartDate && calculateDaysRemaining(item.tradeLockStartDate) > 0
-                      ? `Trade Lock: ${calculateDaysRemaining(item.tradeLockStartDate)} ${calculateDaysRemaining(item.tradeLockStartDate) === 1 ? "day" : "days"}`
-                      : "No Trade Lock"}
+                      ? `Trade Lock: ${calculateDaysRemaining(item.tradeLockStartDate)} ${calculateDaysRemaining(item.tradeLockStartDate) === 1 ? "dia" : "dias"}`
+                      : "Sem Trade Lock"}
                   </div>
                   <div className="flex justify-between items-center">
                     {item.weaponType === "Agent" ? (
@@ -226,13 +226,13 @@ export function BdmSkinsShop() {
                     onClick={() => handleBuyNowClick(`${item.weapon} | ${item.name}`)}
                     className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
                   >
-                    Buy Now
+                    Compre Agora
                   </Button>
                   <Button
                     onClick={() => window.open(item.inspectLink, "_blank")}
                     className="w-full bg-gradient-to-r from-blue-500 to-blue-600"
                   >
-                    Inspect
+                    Inspecionar
                   </Button>
                 </div>
               </CardContent>
