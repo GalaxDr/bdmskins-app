@@ -183,12 +183,12 @@ export function BdmSkinsShop() {
               className="bg-gray-800 border-gray-700 text-white p-2 rounded-md w-full sm:w-auto"
             >
               <option value="all">Todas as Armas</option>
-              <option value="Pistol">Pistolas</option>
-              <option value="Rifle">Rifles</option>
-              <option value="SMG">SMGs</option>
-              <option value="Shotgun">Shotguns</option>
-              <option value="Sniper">Snipers</option>
               <option value="Agent">Agentes</option>
+              <option value="Rifle">Rifles</option>
+              <option value="Pistol">Pistolas</option>
+              <option value="Smg">SMGs</option>
+              <option value="Shotgun">Shotguns</option>
+              <option value="Machinegun">Metralhadoras</option>
             </select>
           </div>
         </div>
