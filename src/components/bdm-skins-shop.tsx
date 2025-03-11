@@ -28,6 +28,7 @@ export function BdmSkinsShop() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<"price-asc" | "price-desc" | "float-asc" | "float-desc">("price-asc");
   const [skinItems, setSkinItems] = useState<SkinItem[]>([]);
+  const [weaponTypeFilter, setWeaponTypeFilter] = useState<string>("all");
 
 
 
@@ -80,29 +81,39 @@ export function BdmSkinsShop() {
 
   // Filtra e ordena os itens de `skinItem` com base na pesquisa e na opção de ordenação
   const filteredSkins = skinItems
-    .filter((item) =>
+  .filter((item) => {
+    const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.weapon.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (sortOption === "price-asc") {
-        return a.price - b.price;
-      } else if (sortOption === "price-desc") {
-        return b.price - a.price;
-      } else if (sortOption === "float-asc") {
-        return a.float - b.float;
-      } else {
-        return b.float - a.float;
-      }
-    });
-    
+      item.weapon.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesWeaponType =
+      weaponTypeFilter === "all" || item.weaponType === weaponTypeFilter;
+
+    // Se estiver ordenando por float, remove agentes
+    if (sortOption.includes("float")) {
+      return matchesSearch && item.weaponType !== "Agent" && matchesWeaponType;
+    }
+
+    return matchesSearch && matchesWeaponType;
+  })
+  .sort((a, b) => {
+    if (sortOption === "price-asc") {
+      return a.price - b.price;
+    } else if (sortOption === "price-desc") {
+      return b.price - a.price;
+    } else if (sortOption === "float-asc") {
+      return a.float - b.float;
+    } else {
+      return b.float - a.float;
+    }
+  });
+
     function calculateDaysRemaining(tradeLockStartDate: string): number {
       const now = new Date();
       const startDate = new Date(tradeLockStartDate);
       const endDate = new Date(startDate);
     
       // Adiciona os 8 dias (7 de trade lock + 1 adicional)
-      endDate.setDate(startDate.getDate() + 9);
+      endDate.setDate(startDate.getDate() + 8);
     
       // Ajusta o horário para 5:00 da manhã no horário de Brasília (GMT-3)
       endDate.setHours(5, 0, 0, 0);
@@ -139,25 +150,45 @@ export function BdmSkinsShop() {
 
         {/* Search and Sort Section */}
         <div className="mb-8 max-w-3xl mx-auto">
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row gap-2 w-full">
+            {/* Campo de Busca */}
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Procurar skins..."
-                className="pl-10 bg-gray-800 border-gray-700 text-white"
+                className="pl-10 bg-gray-800 border-gray-700 text-white w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+
+            {/* Ordenação */}
             <select
               value={sortOption}
-              onChange={(e) => setSortOption(e.target.value as "price-asc" | "price-desc" | "float-asc" | "float-desc")}
-              className="bg-gray-800 border-gray-700 text-white p-2 rounded-md"
+              onChange={(e) =>
+                setSortOption(e.target.value as "price-asc" | "price-desc" | "float-asc" | "float-desc")
+              }
+              className="bg-gray-800 border-gray-700 text-white p-2 rounded-md w-full sm:w-auto"
             >
               <option value="price-asc">Menor Preço</option>
               <option value="price-desc">Maior Preço</option>
               <option value="float-asc">Menor Float</option>
               <option value="float-desc">Maior Float</option>
+            </select>
+
+            {/* Filtro de Armas */}
+            <select
+              value={weaponTypeFilter}
+              onChange={(e) => setWeaponTypeFilter(e.target.value)}
+              className="bg-gray-800 border-gray-700 text-white p-2 rounded-md w-full sm:w-auto"
+            >
+              <option value="all">Todas as Armas</option>
+              <option value="Pistol">Pistolas</option>
+              <option value="Rifle">Rifles</option>
+              <option value="SMG">SMGs</option>
+              <option value="Shotgun">Shotguns</option>
+              <option value="Sniper">Snipers</option>
+              <option value="Agent">Agentes</option>
             </select>
           </div>
         </div>

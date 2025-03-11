@@ -52,6 +52,7 @@ async function seedFromCSV() {
       
       for (const { Weapon, Skin } of results) {
         const weaponTypeName = getWeaponType(Weapon);
+        console.log(`Weapon: ${Weapon}, Skin: ${Skin}, WeaponType: ${weaponTypeName}`);
         if (!weaponTypeName) {
           console.error(`Tipo de arma desconhecido para: ${Weapon}`);
           continue;
