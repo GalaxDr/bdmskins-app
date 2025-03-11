@@ -77,39 +77,42 @@ async function seedAgents() {
       create: { name: "Agent" },
     });
 
-    for (const { skin, weapon } of agents) {
-      // Adiciona ou atualiza a arma
-      const weaponRecord = await prisma.weapon.upsert({
-        where: { name: weapon },
-        update: {},
-        create: {
-          name: weapon,
-          weaponTypeId: agentWeaponType.id,
-        },
-      });
+    // Criar um conjunto único de armas para evitar duplicatas
+    const uniqueWeapons = [...new Set(agents.map((a) => a.weapon))];
 
-      // Adiciona ou atualiza a skin
-      const skinRecord = await prisma.skin.upsert({
-        where: { name: skin },
-        update: {},
-        create: { name: skin },
-      });
+    // Inserir todas as armas de uma vez
+    await prisma.weapon.createMany({
+      data: uniqueWeapons.map((weapon) => ({ name: weapon, weaponTypeId: agentWeaponType.id })),
+      skipDuplicates: true,
+    });
 
-      // Cria a relação entre Skin e Weapon
-      await prisma.skinWeapon.upsert({
-        where: {
-          skinId_weaponId: {
-            skinId: skinRecord.id,
-            weaponId: weaponRecord.id,
-          },
-        },
-        update: {},
-        create: {
-          skinId: skinRecord.id,
-          weaponId: weaponRecord.id,
-        },
-      });
-    }
+    // Criar um conjunto único de skins
+    const uniqueSkins = [...new Set(agents.map((a) => a.skin))];
+
+    // Inserir todas as skins de uma vez
+    await prisma.skin.createMany({
+      data: uniqueSkins.map((skin) => ({ name: skin })),
+      skipDuplicates: true,
+    });
+
+    // Recuperar os IDs das skins e armas
+    const weaponRecords = await prisma.weapon.findMany();
+    const skinRecords = await prisma.skin.findMany();
+
+    // Criar um mapeamento para buscar IDs rapidamente
+    const weaponMap = Object.fromEntries(weaponRecords.map((w) => [w.name, w.id]));
+    const skinMap = Object.fromEntries(skinRecords.map((s) => [s.name, s.id]));
+
+    // Criar os relacionamentos entre skins e armas
+    const skinWeaponData = agents.map(({ skin, weapon }) => ({
+      skinId: skinMap[skin],
+      weaponId: weaponMap[weapon],
+    }));
+
+    await prisma.skinWeapon.createMany({
+      data: skinWeaponData,
+      skipDuplicates: true,
+    });
 
     console.log("Agents seeded successfully.");
   } catch (error) {
