@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const requests = new Map<string, number[]>();
-const LIMIT = 15; // Limite de requisições
+const LIMIT = 30; // Limite de requisições
 const WINDOW_MS = 60 * 1000; // Janela de tempo em milissegundos (1 minuto)
 const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
 
@@ -45,7 +45,7 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.pathname;
 
   // Permite POST /login sem restrições adicionais
-  if (url === "/api/login" && method === "POST") {
+  if (url === "/api/login" && method === "POST" || url === "/api/maintain" && method === "POST") {
     return NextResponse.next();
   }
 
