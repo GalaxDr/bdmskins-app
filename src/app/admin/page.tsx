@@ -99,10 +99,22 @@ export default function AdminPage() {
   }, [setWears]);
   
   const fetchSkinItems = useCallback(async () => {
-    const response = await fetch('/api/skinitem');
-    const data = await response.json();
-    setSkinItems(data);
-  }, [setSkinItems]);
+    try {
+        const response = await fetch('/api/skinitem');
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+            setSkinItems(data);
+        } else {
+            console.error("Erro: A resposta da API não é um array", data);
+            setSkinItems([]);
+        }
+    } catch (error) {
+        console.error("Erro ao buscar skins:", error);
+        setSkinItems([]);
+    }
+}, [setSkinItems]);
+
 
   const fetchWeapons = useCallback(async () => {
     const response = await fetch('/api/weapons');
@@ -117,36 +129,59 @@ export default function AdminPage() {
       fetchWears();
       fetchWeapons();
     }
+    maintainLogin();
   }, [isAuthenticated, fetchSkinItems, fetchWeapons, fetchWears]);
 
-  async function handleLogin() {
+  async function handleLogin(username: string, password: string) {
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-  
-      if (!response.ok) {
-        alert("Credenciais inválidas.");
-        return;
-      }
-  
-      const data = await response.json();
-  
-      // Salva o token no localStorage
-      if (data.token) {
-        sessionStorage.setItem("authToken", data.token);
-        setIsAuthenticated(true);
-      } else {
-        alert("Erro ao receber o token.");
-      }
+        const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (!response.ok) {
+            alert("Credenciais inválidas.");
+            return;
+        }
+
+        const data = await response.json();
+
+        if (data.token) {
+            localStorage.setItem("authToken", data.token); // Persistência do token
+            setIsAuthenticated(true);
+        } else {
+            alert("Erro ao receber o token.");
+        }
     } catch (error) {
-      console.error("Erro ao fazer login:", error);
+        console.error("Erro ao fazer login:", error);
     }
-  }
+}
+
+const maintainLogin = async () => {
+    try {
+        const token = localStorage.getItem("authToken");
+        if (!token) return;
+
+        const response = await fetch("/api/maintain", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            setIsAuthenticated(true);
+        } else {
+            localStorage.removeItem("authToken");
+        }
+    } catch (error) {
+        console.error("Erro ao manter login:", error);
+    }
+};
+
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -314,7 +349,7 @@ export default function AdminPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="mb-4 bg-gray-700 text-white"
           />
-          <Button onClick={handleLogin} className="w-full bg-blue-600">
+          <Button onClick={() => handleLogin(username, password)} className="w-full bg-blue-600">
             Login
           </Button>
         </div>
