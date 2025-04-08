@@ -259,7 +259,7 @@ const maintainLogin = async () => {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
       body: JSON.stringify({
         skinWeaponId,
@@ -319,7 +319,7 @@ const maintainLogin = async () => {
       await fetch(`/api/skinitem/${id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`, // Envia o token no cabeçalho
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Envia o token no cabeçalho
         },
       });
       fetchSkinItems();
@@ -531,6 +531,116 @@ const maintainLogin = async () => {
                   >
                     Delete
                   </Button>
+
+                  {newSkinItem.id === item.id && editing && (
+                  <div className="mt-4 bg-gray-800 p-4 rounded-lg">
+                    <h3 className="text-sm font-semibold text-white mb-2">Edit Skin</h3>
+                    <input
+                      type="text"
+                      name="price"
+                      value={newSkinItem.price}
+                      onChange={handleInputChange}
+                      placeholder="Preço (R$)"
+                      className="w-full mb-2 p-2 rounded text-black"
+                    />
+                    <input
+                      type="text"
+                      name="float"
+                      value={newSkinItem.float}
+                      onChange={(e) => handleFloatChange(e.target.value)}
+                      placeholder="Float (0 - 1)"
+                      className="w-full mb-2 p-2 rounded text-black"
+                    />
+                    <input
+                      type="text"
+                      name="imgLink"
+                      value={newSkinItem.imgLink}
+                      onChange={handleInputChange}
+                      placeholder="Image Link"
+                      className="w-full mb-2 p-2 rounded text-black"
+                    />
+                    <input
+                      type="text"
+                      name="inspectLink"
+                      value={newSkinItem.inspectLink}
+                      onChange={handleInputChange}
+                      placeholder="Inspect Link"
+                      className="w-full mb-2 p-2 rounded text-black"
+                    />
+
+                    <div className="flex gap-2 mb-2">
+                      <label className="text-sm text-white flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={newSkinItem.isStatTrak}
+                          onChange={() =>
+                            setNewSkinItem((prev) => ({ ...prev, isStatTrak: !prev.isStatTrak }))
+                          }
+                        />
+                        StatTrak
+                      </label>
+                      <label className="text-sm text-white flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={newSkinItem.hasStickers}
+                          onChange={() =>
+                            setNewSkinItem((prev) => ({ ...prev, hasStickers: !prev.hasStickers }))
+                          }
+                        />
+                        Stickers
+                      </label>
+                      <label className="text-sm text-white flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={newSkinItem.hasLowFloat}
+                          onChange={() =>
+                            setNewSkinItem((prev) => ({ ...prev, hasLowFloat: !prev.hasLowFloat }))
+                          }
+                        />
+                        Low Float
+                      </label>
+                    </div>
+
+                    <input
+                      type="date"
+                      name="tradeLockStartDate"
+                      value={newSkinItem.tradeLockStartDate}
+                      onChange={handleInputChange}
+                      className="w-full mb-2 p-2 rounded text-black"
+                    />
+
+                    <Button
+                      onClick={addOrUpdateSkinItem}
+                      className="bg-green-600 w-full mb-1"
+                    >
+                      Salvar Alterações
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEditing(false);
+                        setNewSkinItem({
+                          id: null,
+                          skinWeaponId: null,
+                          skinId: null,
+                          weaponId: null,
+                          price: "",
+                          float: "",
+                          wearId: null,
+                          imgLink: "",
+                          inspectLink: "",
+                          isStatTrak: false,
+                          hasStickers: false,
+                          hasLowFloat: false,
+                          tradeLockStartDate: "",
+                        });
+                      }}
+                      className="bg-gray-600 w-full"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                )}
+
                 </div>
               ))}
             </div>
