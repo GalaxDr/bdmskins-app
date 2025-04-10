@@ -327,7 +327,7 @@ const maintainLogin = async () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen bg-gradient-to-tr from-black to-gray-900 text-white p-8">
       {!isAuthenticated ? (
         <div className="max-w-md mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-4">Admin Login</h2>

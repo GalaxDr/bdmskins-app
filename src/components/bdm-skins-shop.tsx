@@ -164,7 +164,7 @@ export function BdmSkinsShop() {
     <div className="min-h-screen bg-gradient-to-tr from-blue-500 to-blue-800 dark:from-black dark:to-gray-900 text-white">
       <Button
         onClick={toggleTheme}
-        className="fixed top-4 right-4 px-2 py-2 bg-blue-500 dark:bg-gray-600 text-white dark:text-gray-300 rounded-full hover:bg-blue-400 dark:hover:bg-gray-500 transition duration-300"
+        className="fixed top-4 right-4 px-2 py-2 z-50 bg-blue-500 dark:bg-gray-600 text-white dark:text-gray-300 rounded-full hover:bg-blue-400 dark:hover:bg-gray-500 transition duration-300"
       >
         {!isDarkMode ? "💡 Claro" : "🌙 Escuro"}
       </Button>
