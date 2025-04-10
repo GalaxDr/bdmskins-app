@@ -194,7 +194,7 @@ export function BdmSkinsShop() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Procurar skins..."
-                className="pl-10 bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-900 text-white w-full placeholder:text-white"
+                className="pl-10 bg-blue-500 border border-blue-800 dark:bg-black dark:border-gray-800 text-white placeholder:text-white focus-visible:ring-1 focus-visible:ring-blue-300 dark:focus-visible:ring-white focus-visible:outline-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -206,7 +206,7 @@ export function BdmSkinsShop() {
               onChange={(e) =>
                 setSortOption(e.target.value as "price-asc" | "price-desc" | "float-asc" | "float-desc")
               }
-              className="bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-800 text-white p-2 rounded-md w-full sm:w-auto"
+              className="bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-800 text-white p-2 rounded-md w-full sm:w-auto focus:outline-none focus:ring-1 focus:ring-blue-300 dark:focus:ring-white"
             >
               <option value="price-asc">Menor Preço</option>
               <option value="price-desc">Maior Preço</option>
@@ -218,7 +218,7 @@ export function BdmSkinsShop() {
             <select
               value={weaponTypeFilter}
               onChange={(e) => setWeaponTypeFilter(e.target.value)}
-              className="bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-800 text-white p-2 rounded-md w-full sm:w-auto"
+              className="bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-800 text-white p-2 rounded-md w-full sm:w-auto focus:outline-none focus:ring-1 focus:ring-blue-300 dark:focus:ring-white"
             >
               <option value="all">Todas as Armas</option>
               <option value="Knife">Facas</option>
