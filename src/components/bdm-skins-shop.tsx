@@ -29,6 +29,7 @@ export function BdmSkinsShop() {
   const [sortOption, setSortOption] = useState<"price-asc" | "price-desc" | "float-asc" | "float-desc">("price-asc");
   const [skinItems, setSkinItems] = useState<SkinItem[]>([]);
   const [weaponTypeFilter, setWeaponTypeFilter] = useState<string>("all");
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
 
 
@@ -77,7 +78,28 @@ export function BdmSkinsShop() {
 
   useEffect(() => {
     fetchSkinItems();
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme === "dark") {
+      setIsDarkMode(true);
+      document.documentElement.classList.add("dark");
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
+    }
   }, []);
+
+  // Função para alternar entre os temas claro e escuro
+  const toggleTheme = () => {
+    const newTheme = isDarkMode ? "light" : "dark";
+    setIsDarkMode(!isDarkMode);
+    localStorage.setItem("theme", newTheme);
+  
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   // Filtra e ordena os itens de `skinItem` com base na pesquisa e na opção de ordenação
   const filteredSkins = skinItems
@@ -138,15 +160,31 @@ export function BdmSkinsShop() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    
+    <div className="min-h-screen bg-gradient-to-tr from-blue-500 to-blue-800 dark:from-black dark:to-gray-900 text-white">
+      <Button
+        onClick={toggleTheme}
+        className="fixed top-4 right-4 px-2 py-2 bg-blue-500 dark:bg-gray-600 text-white dark:text-gray-300 rounded-full hover:bg-blue-400 dark:hover:bg-gray-500 transition duration-300"
+      >
+        {!isDarkMode ? "💡 Claro" : "🌙 Escuro"}
+      </Button>
       <div className="container mx-auto p-6">
-        <header className="text-center mb-10 pt-8">
-          <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
-            BDM Skins
-          </h1>
-          <p className="text-gray-400">Marketplace Premium de CS2 </p>
-          <meta name="keywords" content="bdmskins, bdm skins, skins cs2, skins csgo, comprar skins cs2, marketplace skins cs2"></meta>
-        </header>
+      <header className="text-center mb-2">
+        <div className="flex justify-center items-center h-48 md:h-60">
+          <div className="relative w-72 md:w-[28rem] h-full scale-150 pointer-events-none">
+            <Image
+              src="/logo.png"
+              alt="BDM Skins Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
+        <meta name="keywords" content="bdmskins, bdm skins, skins cs2, skins csgo, comprar skins cs2, marketplace skins cs2" />
+      </header>
+
+
 
         {/* Search and Sort Section */}
         <div className="mb-8 max-w-3xl mx-auto">
@@ -156,7 +194,7 @@ export function BdmSkinsShop() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Procurar skins..."
-                className="pl-10 bg-gray-800 border-gray-700 text-white w-full"
+                className="pl-10 bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-900 text-white w-full placeholder:text-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -168,7 +206,7 @@ export function BdmSkinsShop() {
               onChange={(e) =>
                 setSortOption(e.target.value as "price-asc" | "price-desc" | "float-asc" | "float-desc")
               }
-              className="bg-gray-800 border-gray-700 text-white p-2 rounded-md w-full sm:w-auto"
+              className="bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-800 text-white p-2 rounded-md w-full sm:w-auto"
             >
               <option value="price-asc">Menor Preço</option>
               <option value="price-desc">Maior Preço</option>
@@ -180,7 +218,7 @@ export function BdmSkinsShop() {
             <select
               value={weaponTypeFilter}
               onChange={(e) => setWeaponTypeFilter(e.target.value)}
-              className="bg-gray-800 border-gray-700 text-white p-2 rounded-md w-full sm:w-auto"
+              className="bg-blue-500 border-blue-800 dark:bg-black dark:border-gray-800 text-white p-2 rounded-md w-full sm:w-auto"
             >
               <option value="all">Todas as Armas</option>
               <option value="Knife">Facas</option>
@@ -200,10 +238,10 @@ export function BdmSkinsShop() {
             
             <Card 
               key={item.id} 
-              className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+              className="bg-blue-800 border-blue-700 dark:bg-black dark:border-gray-900 overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
             >
               <CardHeader className="p-4">
-                <div className="relative aspect-square bg-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="relative aspect-square bg-blue-600 dark:bg-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
                   <Image
                     src={item.image}
                     alt={item.name}
@@ -214,30 +252,29 @@ export function BdmSkinsShop() {
                     className="transition-transform duration-300 hover:scale-105 filter saturate-225"
                   />
                   {item.hasLowFloat && (
-                  <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                  <div className="absolute top-2 left-2 bg-blue-500 dark:bg-gray-600 text-white text-xs px-2 py-1 rounded-full">
                     Bom Float
                   </div>
                 )}
                 {/* Adesivo para stickers */}
                 {item.hasStickers && (
-                  <div className="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">
+                  <div className="absolute top-2 right-2 bg-yellow-600 dark:bg-yellow-700 text-white text-xs px-2 py-1 rounded-full">
                     Stickers
                   </div>
                 )}
                 </div>
               </CardHeader>
               <CardContent className="p-4 pt-0 flex flex-col flex-grow">
-                <CardTitle className="text-md mb-2 text-gray-100">
+                <CardTitle className="text-md mb-2 text-gray-100 dark:text-gray-300">
                   {item.weapon} {item.isStatTrak ? "(StatTrak™)" : ""} | {item.name}
                 </CardTitle>
                 <div className="flex flex-col space-y-2 flex-grow">
                   <div className="flex justify-between items-center">
                   </div>
                     <div className="flex items-center space-x-2">
-                      <p className="text-2xl font-bold text-blue-400">R${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price)}</p>
+                      <p className="text-2xl font-bold text-blue-400 dark:text-blue-500">R${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price)}</p>
                       <p className="text-xl font-bold text-red-500 line-through">R${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price * 1.35)}</p>
                     </div>
-                    
                   </div>
                   <div className="flex flex-col space-y-2">
                   <div className={`text-sm ${item.tradeLockStartDate && calculateDaysRemaining(item.tradeLockStartDate) > 0 ? "text-red-500" : "text-green-500"}`}>
@@ -247,23 +284,23 @@ export function BdmSkinsShop() {
                   </div>
                   <div className="flex justify-between items-center">
                     {item.weaponType === "Agent" ? (
-                      <span className="px-2 py-1 bg-gray-600 rounded-full text-xs">Agent</span>
+                      <span className="px-2 py-1 bg-gray-400 text-white dark:text-gray-200 dark:bg-gray-500  rounded-full text-xs">Agent</span>
                     ) : (
                       <>
-                        <span className="px-2 py-1 bg-gray-600 rounded-full text-xs">{item.wear}</span>
-                        <span className="text-sm text-gray-400">Float: {item.float.toFixed(8)}</span>
+                        <span className="px-2 py-1 bg-gray-400 text-white dark:text-gray-200 dark:bg-gray-500  rounded-full text-xs">{item.wear}</span>
+                        <span className="text-sm text-white dark:text-gray-300 ">Float: {item.float.toFixed(8)}</span>
                       </>
                     )}
                   </div>
                   <Button
                     onClick={() => handleBuyNowClick(`${item.weapon} | ${item.name}`)}
-                    className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600"
+                    className="w-full mt-4 bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 dark:text-gray-800 font-size text-base"
                   >
                     Compre Agora
                   </Button>
                   <Button
                     onClick={() => window.open(item.inspectLink, "_blank")}
-                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600"
+                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 dark:text-gray-700 text-base"
                   >
                     Inspecionar
                   </Button>
