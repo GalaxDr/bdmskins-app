@@ -355,7 +355,7 @@ const maintainLogin = async () => {
         </div>
       ) : (
         <div>
-          <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-8 max-w-md mx-auto">Admin Dashboard</h1>
 
           <div className="mb-8 bg-gray-800 p-6 rounded-lg w-3/4 mx-auto">
             <h2 className="text-xl font-bold mb-4">{editing ? "Edit Skin Item" : "Add New Skin Item"}</h2>
