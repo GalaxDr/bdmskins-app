@@ -355,9 +355,9 @@ const maintainLogin = async () => {
         </div>
       ) : (
         <div>
-          <h1 className="text-3xl font-bold mb-8 max-w-md mx-auto">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-8 max-w-md mx-auto  pl-16">Admin Dashboard</h1>
 
-          <div className="mb-8 bg-gray-800 p-6 rounded-lg w-3/4 mx-auto">
+          <div className="mb-8 bg-gray-800 p-6 rounded-lg w-4/5 mx-auto">
             <h2 className="text-xl font-bold mb-4">{editing ? "Edit Skin Item" : "Add New Skin Item"}</h2>
 
             <select
@@ -494,7 +494,9 @@ const maintainLogin = async () => {
           <div className="bg-gray-800 p-6 rounded-lg">
             <h2 className="text-xl font-bold mb-4">Existing Skin Items</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
-              {skinItems.map((item) => (
+              {[...skinItems]
+                .sort((a, b) => b.id - a.id)
+                .map((item) => (
                 <div key={item.id} className="bg-gray-900 p-4 rounded-lg shadow-lg">
                   <Image
                     src={item.imgLink}
