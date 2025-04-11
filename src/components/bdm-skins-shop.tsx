@@ -170,8 +170,8 @@ export function BdmSkinsShop() {
       </Button>
       <div className="container mx-auto p-6">
       <header className="text-center mb-2">
-        <div className="flex justify-center items-center h-48 md:h-60">
-          <div className="relative w-72 md:w-[28rem] h-full scale-150 pointer-events-none">
+        <div className="flex justify-center items-center h-48 md:h-60 flex-col relative">
+          <div className="relative w-72 md:w-[28rem] h-full scale-150 pointer-events-none -mt-10">
             <Image
               src="/logo.png"
               alt="BDM Skins Logo"
@@ -180,12 +180,14 @@ export function BdmSkinsShop() {
               priority
             />
           </div>
+
+          {/* Barrinha estilizada abaixo da logo, fora da escala */}
+          <div className="mt-[-3rem] w-60 h-1 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 animate-gradient-pingpong" />
+
         </div>
+
         <meta name="keywords" content="bdmskins, bdm skins, skins cs2, skins csgo, comprar skins cs2, marketplace skins cs2" />
       </header>
-
-
-
         {/* Search and Sort Section */}
         <div className="mb-8 max-w-3xl mx-auto">
           <div className="flex flex-col sm:flex-row gap-2 w-full">

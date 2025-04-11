@@ -70,3 +70,20 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes gradient-pingpong {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-pingpong {
+  background-size: 200% 200%;
+  animation: gradient-pingpong 4s ease-in-out infinite;
+}
