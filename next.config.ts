@@ -49,7 +49,23 @@ const nextConfig: NextConfig = {
 };
 module.exports = {
   images: {
-    domains: ["community.cloudflare.steamstatic.com", "community.fastly.steamstatic.com", "community.akamai.steamstatic.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "community.cloudflare.steamstatic.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "community.fastly.steamstatic.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "community.akamai.steamstatic.com",
+        pathname: "/**",
+      },
+    ],
   },
 };
 
