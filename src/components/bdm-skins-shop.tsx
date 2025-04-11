@@ -182,7 +182,7 @@ export function BdmSkinsShop() {
           </div>
 
           {/* Barrinha estilizada abaixo da logo, fora da escala */}
-          <div className="mt-[-3rem] w-60 h-1 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 animate-gradient-pingpong" />
+          <div className="mt-[-3rem] w-60 h-1 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 dark:from-gray-200 dark:via-gray-500 dark:to-gray-800 animate-gradient-pingpong" />
 
         </div>
 
